@@ -14,7 +14,8 @@ SIGNALS = ['kr-guide-dog!', 'kr-guide-cat!']
 
 class Feed:
     """ Feed """
-    def __init__(self):
+    def __init__(self, config):
+        self.config = config
         self.blockchain = Blockchain()
         self.loop = asyncio.get_event_loop()
         self.q = asyncio.Queue()
