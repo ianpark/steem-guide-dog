@@ -8,5 +8,4 @@ try:
     bot = Bot()
     bot.run()
 except KeyboardInterrupt as ki:
-    print("Keyboard!")
     bot.stop()

@@ -45,6 +45,19 @@ class Bot:
             print ('Append data to the left: %s' % result['post'] )
             self.queue.appendleft(result['post'])
 
+    def in_black_list(self, post):
+        if post['author'] in self.config['blacklist']:
+            print ('Black list match: ignore the report from %s' % post['author'])
+            return True
+        return False
+
+    def in_white_list(self, post):
+        if post['parent_author'] in self.config['whitelist']:
+            print ('White list match: ignore the report for %s' % post['parent_author'])
+            return True
+        return False
+
+
     async def work(self):
         print ('Start Bot')
         loop = asyncio.get_event_loop()
@@ -53,8 +66,18 @@ class Bot:
             await asyncio.sleep(1)
             while len(self.queue):
                 if self.posters:
-                    poster = self.posters.popleft()
-                    poster.leave_comment(self.queue.popleft())
+                    post = self.queue.popleft()
+                    try:
+                        print ('%s reported %s' % (post['author'], post['parent_author']))
+                        # Filter out by white list and black list
+                        if (self.in_black_list(post) or
+                            self.in_white_list(post)):
+                            break
+                        # Dispatch the past to the idle poster
+                        self.posters.popleft().leave_comment(post)
+                    except Exception as e:
+                        print ('Error! %s' % e)
+                        pass
                 else:
                     print ("No idle poster. Queue length=%s" % len(self.queue))
                     break

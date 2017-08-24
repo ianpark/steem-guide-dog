@@ -42,6 +42,7 @@ class Feed:
             try:
                 self.handle_data(next(stream))
             except Exception as e:
+                print(e)
                 print ("ERROR - %s" % e)
 
 

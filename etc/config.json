@@ -2,11 +2,19 @@
     "keyfile_path": "~/.steem/keys.json",
     "main_tag": "kr",
     "tag_prefix": "kr-",
-    "signals": ["kr-guide-dog!", "kr-guide-cat!"],
+    "signals": ["kr-guide!", "kr-guide-dog!", "kr-guide-cat!", "kr-dog!"],
     "posters": [
         {
             "account": "krguidedog",
-            "nickname": "KR Guide Dog"
+            "nickname": "KR Guide Dog",
+            "photo": [
+                "http://i.imgur.com/ikEQBTz.jpg",
+                "http://i.imgur.com/E0FuVhq.jpg"
+            ],
+            "message": [
+            ]
         }
-    ]
+    ],
+    "whitelist": ["krguidedog"],
+    "blacklist": [""]
 }
