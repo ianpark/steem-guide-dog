@@ -1,5 +1,5 @@
-# steem-kr-guide-dog
-Guide the users who are misusing the KR steem channels
+# steem-guide-dog
+Guide the users who are misusing the dedicated steem channels
 
 # Dependencies
 - Python 3.5
