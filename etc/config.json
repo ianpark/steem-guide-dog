@@ -1,1 +1,12 @@
-{"private_posting_key": "", "private_active_key": ""}
+{
+    "keyfile_path": "~/.steem/keys.json",
+    "main_tag": "kr",
+    "tag_prefix": "kr-",
+    "signals": ["kr-guide-dog!", "kr-guide-cat!"],
+    "posters": [
+        {
+            "account": "krguidedog",
+            "nickname": "KR Guide Dog"
+        }
+    ]
+}

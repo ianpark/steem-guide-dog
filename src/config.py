@@ -1,6 +1,6 @@
 import json
 
-class Config:
+class Config(dict):
     data = {}
     def __init__(self, path):
         with open(path) as data_file:    

@@ -4,37 +4,39 @@ Feed
 
 import asyncio
 from time import sleep
-from asyncio import Queue
 from concurrent.futures import ThreadPoolExecutor
 from steem.blockchain import Blockchain
 from steem.post import Post
 
-PREFIX = 'kr-guidedogtest'
-SIGNALS = ['kr-guide-dog!', 'kr-guide-cat!']
 
 class Feed:
     """ Feed """
-    def __init__(self, config):
+    def __init__(self, config, sink):
         self.config = config
+        self.sink = sink
         self.blockchain = Blockchain()
         self.loop = asyncio.get_event_loop()
-        self.q = asyncio.Queue()
         self.executor = ThreadPoolExecutor(max_workers=1)
         self.instance = None
         self.run = False
 
     def handle_data(self, post):
+        # weirdly non-comment posts are still being injected
+        if not post.is_comment():
+            return
         """ handle_data """
         tags = post.json_metadata.get('tags', [])
-        if 'kr' in tags or any(x.startswith(PREFIX) for x in tags):
-            for signal in SIGNALS:
+        if tags and self.config['main_tag'] in tags or \
+            any(x.startswith(self.config['tag_prefix']) for x in tags):
+            for signal in self.config['signals']:
                 # Match the first signal only
                 if signal in post.get('body',''):
                     post['bot-signal'] = signal
-                    self.q.put_nowait(post)
+                    self.sink(post)
                     break
 
     def work(self):
+        print ('Start Feed')
         stream = map(Post, self.blockchain.stream(filter_by=['comment']))
         while self.run:
             try:
@@ -51,10 +53,7 @@ class Feed:
             raise Exception('Already running')
 
     def stop(self):
+        print ('Stopping Feed')
         self.run = False
         self.instance.result()
         self.instance = None
-
-    async def get_feed(self):
-        value = await self.q.get()
-        return value
