@@ -9,7 +9,10 @@ from concurrent.futures import ThreadPoolExecutor
 from time import sleep
 from feed import Feed
 from performer import Performer
+from datetime import datetime
+from db import DataStore
 from collections import deque
+
 
 CONFIG_FILE_PATH = 'etc/config.json'
 
@@ -22,6 +25,7 @@ class Bot:
         self.feed = Feed(self.config, self.on_data)
         self.queue = deque()
         self.posters = deque()
+        self.db = DataStore(self.config)
         keypath = os.path.expanduser(self.config['keyfile_path'])
         with open(keypath) as keyfile:    
             keyfile_json = json.load(keyfile)
@@ -45,18 +49,32 @@ class Bot:
             print ('Append data to the left: %s' % result['post'] )
             self.queue.appendleft(result['post'])
 
-    def in_black_list(self, post):
+    def is_valid(self, post):
+        if post['author'] == post['parent_author']:
+            print ('Author and parent author is the same')
+            return False
         if post['author'] in self.config['blacklist']:
             print ('Black list match: ignore the report from %s' % post['author'])
-            return True
-        return False
-
-    def in_white_list(self, post):
+            return False
         if post['parent_author'] in self.config['whitelist']:
             print ('White list match: ignore the report for %s' % post['parent_author'])
-            return True
-        return False
+            return False
+        return True
 
+    def save_report(self, post):
+        result = self.db.store_report(
+            {
+                'reporter': post['author'],
+                'author': post['parent_author'],
+                'permlink': post['parent_permlink'],
+                'report_time': datetime.now(),
+                'bot_signal': post['bot_signal']
+            })
+        return result
+
+    def leave_comment(self, post):
+        post['reported_count'] = self.db.get_reported_count(post['parent_author'])
+        self.posters.popleft().leave_comment(post)
 
     async def work(self):
         print ('Start Bot')
@@ -69,12 +87,14 @@ class Bot:
                     post = self.queue.popleft()
                     try:
                         print ('%s reported %s' % (post['author'], post['parent_author']))
-                        # Filter out by white list and black list
-                        if (self.in_black_list(post) or
-                            self.in_white_list(post)):
+                        if not self.is_valid(post):
+                            print ('not valid')
+                            break
+                        if not self.save_report(post):
+                            print ('failed to save')
                             break
                         # Dispatch the past to the idle poster
-                        self.posters.popleft().leave_comment(post)
+                        self.leave_comment(post)
                     except Exception as e:
                         print ('Error! %s' % e)
                         pass

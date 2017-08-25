@@ -19,7 +19,7 @@ class Performer:
         return True
 
     def leave_comment(self, post):
-        print("ID: %s, %s (%s)" % (post['identifier'], post, post['bot-signal']))
+        print("ID: %s, %s (%s)" % (post['identifier'], post, post['bot_signal']))
         print ("%s: %s/%s > %s" %(post['root_title'], post['parent_author'], post['author'], post['body']))
 
         result = True
@@ -27,8 +27,8 @@ class Performer:
             parent_id = "@%s/%s" % (post['parent_author'],post['parent_permlink'])
             body_text = "%s\n%s" % (
                 random.choice(self.poster['photo']),
-                'Hello @%s! @%s told me you need my help! :D\nThanks for calling me! I am just a tiny guide puppy who is eager to help the KR friends not to be bothred by the spammers. But.... I am not ready yet... :) \n Please check the detail in: https://steemit.com/kr/@asbear/kr-kr' % (
-                    post['parent_author'], post['author']
+                'Hello @%s! @%s told me you need my help! :D\nThanks for calling me! I am just a tiny guide puppy who is eager to help you to communicate well with the KR friends without bothering them. But.... I am not ready yet... :) \n Please check the detail in: https://steemit.com/kr/@asbear/kr-kr\n Reported count: %d' % (
+                    post['parent_author'], post['author'], post['reported_count']
                 )
             )
             self.steem.commit.post(

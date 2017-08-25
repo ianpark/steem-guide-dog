@@ -1,4 +1,5 @@
 {
+    "db_path": "db/db.json",
     "keyfile_path": "~/.steem/keys.json",
     "main_tag": "kr",
     "tag_prefix": "kr-",
@@ -15,6 +16,6 @@
             ]
         }
     ],
-    "whitelist": ["krguidedog"],
+    "whitelist": [""],
     "blacklist": [""]
 }

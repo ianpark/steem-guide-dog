@@ -31,7 +31,7 @@ class Feed:
             for signal in self.config['signals']:
                 # Match the first signal only
                 if signal in post.get('body',''):
-                    post['bot-signal'] = signal
+                    post['bot_signal'] = signal
                     self.sink(post)
                     break
 
