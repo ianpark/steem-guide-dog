@@ -24,7 +24,7 @@ class Performer:
                 else 'We have met %s times already!' % post['reported_count'])
         lines = [random.choice(self.poster['photo']),
                 '## Hello @%s! %s' % (post['parent_author'], greet),
-                'I am just a tiny guide puppy who is eager to help you to communicate well with the friends in KR community. Metting me means that **your post needs to be improved** in certain ways to be welcomed by the Korean readers. Please see my advice below :)',
+                'I am just a tiny guide puppy who is eager to help you to communicate well with the friends in KR community. Meeting me means that **your post needs to be improved** in certain ways to be welcomed by the Korean readers. Please see my advice below :)',
                 '',
                 '- Please **refrain using any online translators**. It does not work well with Korean language. English is preferred than translated Korean.',
                 '- It is ok to use English, but the post **should be somewhat relevant to Korean**.',
