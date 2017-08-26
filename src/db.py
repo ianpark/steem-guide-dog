@@ -1,3 +1,4 @@
+import logging
 from tinydb import TinyDB, Query
 
 """
@@ -14,6 +15,7 @@ class DataStore:
     DB class using TinyDB
     TODO: Reimplement usign proper DB
     """
+    log = logging.getLogger(__name__)
     def __init__(self, config):
         """ Init """
         self.db = TinyDB(config['db_path'])
@@ -25,7 +27,7 @@ class DataStore:
                     (qry.author == report['author']) &
                     (qry.permlink == report['permlink']))
         if result:
-            print ('Already exists: %s' % result)
+            self.log.info('Already exists: %s' % result)
             return False
         reports.insert(report)
         return True

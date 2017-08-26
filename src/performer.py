@@ -1,3 +1,4 @@
+import logging
 import random
 from datetime import datetime, timedelta
 from steem import Steem
@@ -5,7 +6,7 @@ from steem import Steem
 POSTING_GUARD_TIME = timedelta(seconds=20)
 
 class Performer:
-
+    log = logging.getLogger(__name__)
     def __init__(self, config, poster, priv_keys, on_complete):
         self.config = config
         self.poster = poster
@@ -18,25 +19,35 @@ class Performer:
             return False
         return True
 
-    def leave_comment(self, post):
-        print("ID: %s, %s (%s)" % (post['identifier'], post, post['bot_signal']))
-        print ("%s: %s/%s > %s" %(post['root_title'], post['parent_author'], post['author'], post['body']))
+    def generate_message(self,post):
+        greet = ('Nice to meet you!'if post['reported_count'] <= 1 
+                else 'We have met %s times already!' % post['reported_count'])
+        lines = [random.choice(self.poster['photo']),
+                '## Hello @%s! %s' % (post['parent_author'], greet),
+                'I am just a tiny guide puppy who is eager to help you to communicate well with the friends in KR community. Metting me means that **your post needs to be improved** in certain ways to be welcomed by the Korean readers. Please see my advice below :)',
+                '',
+                '- Please **refrain using any online translators**. It does not work well with Korean language. English is preferred than translated Korean.',
+                '- It is ok to use English, but the post **should be somewhat relevant to Korean**.',
+                '- **Do not copy someone else\'s content**. You will be purnished and banned by the Korean whales if you do.',
+                '- If you meet me very often, you would be put into the **blacklist**.',
+                '',
+                'I hope you enjoy Steemit as much as we do. :)',
+                '',
+                'Many thanks!']
+        return '\n'.join(lines)
 
+    def leave_comment(self, post):
+        self.log.info("ID: %s, %s (%s)" % (post['identifier'], post, post['bot_signal']))
+        self.log.info ("%s: %s/%s > %s" %(post['root_title'], post['parent_author'], post['author'], post['body']))
+        self.log.info (self.generate_message(post))
         result = True
         try:
-            parent_id = "@%s/%s" % (post['parent_author'],post['parent_permlink'])
-            body_text = "%s\n%s" % (
-                random.choice(self.poster['photo']),
-                'Hello @%s! @%s told me you need my help! :D\nThanks for calling me! I am just a tiny guide puppy who is eager to help you to communicate well with the KR friends without bothering them. But.... I am not ready yet... :) \n Please check the detail in: https://steemit.com/kr/@asbear/kr-kr\n Reported count: %d' % (
-                    post['parent_author'], post['author'], post['reported_count']
-                )
-            )
             self.steem.commit.post(
                 title='guide puppy',
-                body=body_text,
+                body=self.generate_message(post),
                 author=self.poster['account'],
                 permlink=None,
-                reply_identifier=parent_id,
+                reply_identifier=post['parent_post_id'],
                 json_metadata=None,
                 comment_options=None,
                 community=None,
@@ -45,7 +56,7 @@ class Performer:
                 self_vote=False
             )
         except Exception as e:
-            print(e)
+            self.log.info(e)
             result = False
             
         self.on_complete({'result': True,
