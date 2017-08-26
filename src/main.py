@@ -17,8 +17,9 @@ consoleHandler = logging.StreamHandler()
 consoleHandler.setFormatter(logFormatter)
 rootLogger.addHandler(consoleHandler)
 
-try:
-    bot = Bot()
-    bot.run()
-except KeyboardInterrupt as ki:
-    bot.stop()
+if __name__ == "__main__":
+    try:
+        bot = Bot()
+        bot.run()
+    except KeyboardInterrupt as ki:
+        bot.stop()

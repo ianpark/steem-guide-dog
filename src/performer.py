@@ -53,7 +53,7 @@ class Performer:
                 community=None,
                 tags=None,
                 beneficiaries=None,
-                self_vote=False
+                self_vote=True
             )
         except Exception as e:
             self.log.info(e)

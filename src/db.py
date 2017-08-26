@@ -32,6 +32,10 @@ class DataStore:
         reports.insert(report)
         return True
 
+    def read_all(self):
+        reports = self.db.table('reports')
+        return reports.all()
+
     def get_report_count(self, user_id):
         reports = self.db.table('reports')
         qry = Query()

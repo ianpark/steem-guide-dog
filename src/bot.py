@@ -14,6 +14,7 @@ from performer import Performer
 from datetime import datetime
 from db import DataStore
 from collections import deque
+from webapp import run_webapp
 
 
 CONFIG_FILE_PATH = 'etc/config.json'
@@ -39,6 +40,7 @@ class Bot:
                             keyfile_json[poster['account']],
                             self.on_complete))
         self.run_flag = True
+        self.executor.submit(run_webapp, self.config, self.db)
     
     def on_data(self, post):
         """ Should not block this function """
