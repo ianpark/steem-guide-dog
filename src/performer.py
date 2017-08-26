@@ -28,7 +28,7 @@ class Performer:
                 '',
                 '- Please **refrain using any online translators**. It does not work well with Korean language. English is preferred than translated Korean.',
                 '- It is ok to use English, but the post **should be somewhat relevant to Korean**.',
-                '- **Do not copy someone else\'s content**. You will be purnished and banned by the Korean whales if you do.',
+                '- **Do not copy someone else\'s content**. Your post will be downvoted by the Korean whales if you do.',
                 '- If you meet me very often, you would be put into the **blacklist**.',
                 '',
                 'I hope you enjoy Steemit as much as we do. :)',
