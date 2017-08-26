@@ -35,4 +35,4 @@ def run_webapp(_config, _db):
     global config, db
     config = _config
     db = _db
-    app.run()
+    app.run(host='0.0.0.0', debug = False)
