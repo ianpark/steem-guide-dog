@@ -14,8 +14,7 @@
                 "http://i.imgur.com/Cx4HH05.jpg",
                 "http://i.imgur.com/l2z8MHm.jpg"
             ],
-            "message": [
-            ]
+            "message_file": "etc/greeting.txt"
         }
     ],
     "whitelist": [""],

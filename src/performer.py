@@ -14,26 +14,23 @@ class Performer:
         self.steem = Steem(keys=priv_keys)
         self.last_posting = datetime.now() - POSTING_GUARD_TIME
 
+        with open(poster['message_file']) as f:
+            message = f.readlines()
+            self.message = [x.strip() for x in message]
+
     def is_busy(self):
         if (datetime.now() - self.last_posting) < POSTING_GUARD_TIME:
             return False
         return True
 
     def generate_message(self,post):
-        greet = ('Nice to meet you!'if post['reported_count'] <= 1 
+        greet = ('Nice to meet you!' if post['reported_count'] <= 1
                 else 'We have met %s times already!' % post['reported_count'])
         lines = [random.choice(self.poster['photo']),
-                '## Hello @%s! %s' % (post['parent_author'], greet),
-                'I am just a tiny guide puppy who is eager to help you to communicate well with the friends in KR community. Meeting me means that **your post needs to be improved** in certain ways to be welcomed by the Korean readers. Please see my advice below :)',
-                '',
-                '- Please **refrain using any online translators**. It does not work well with Korean language. English is preferred than translated Korean.',
-                '- It is ok to use English, but the post **should be somewhat relevant to Korean**.',
-                '- **Do not copy someone else\'s content**. Your post will be downvoted by the Korean whales if you do.',
-                '- If you meet me very often, you would be put into the **blacklist**.',
-                '',
-                'I hope you enjoy Steemit as much as we do. :)',
-                '',
-                'Many thanks!']
+                '## Woff, woff!',
+                '#### Hello @%s, %s' % (post['parent_author'], greet)
+                ]
+        lines.extend(self.message)
         return '\n'.join(lines)
 
     def leave_comment(self, post):
