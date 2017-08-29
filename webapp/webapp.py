@@ -1,34 +1,53 @@
+import json
 import logging
-from flask import Flask, render_template
+import time
+from flask import Flask, render_template, send_from_directory
 
 log = logging.getLogger(__name__)
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='/static')
 
 config = None
 db = None
 
-def get_statistics():
-    pass
+def dict_to_list(source):
+    list_keys = [ k for k in source ]
+    list_values = [ v for v in source.values() ]
+    list_key_value = [ [k,v] for k, v in source.items() ]
+    return list_key_value
 
-@app.route("/")
-def main_page():
+def get_data():
     data = db.read_all()
     reporters = {}
-    spammers = {}
+    suspects = {}
     for i in data:
         if i['reporter'] in reporters:
             reporters[i['reporter']] += 1
         else:
             reporters[i['reporter']] = 1
 
-        if i['author'] in spammers:
-            spammers[i['author']] += 1
+        if i['author'] in suspects:
+            suspects[i['author']] += 1
         else:
-            spammers[i['author']] = 1
-    log.info(reporters)
-    log.info(spammers)
-    
-    return render_template('index.html', data = {'reporters': reporters, 'spammers': spammers} )    
+            suspects[i['author']] = 1
+
+    return {'reporters': dict_to_list(reporters),
+            'suspects': dict_to_list(suspects),
+            'reports': data}
+
+# For all static files 
+@app.route('/<path:path>')
+def static_file(path):
+    return app.send_static_file(path)
+
+# For main page
+@app.route('/')
+def main_page():
+    return app.send_static_file('index.html')
+
+# For status JSON
+@app.route("/status")
+def status():
+    return json.dumps(get_data())
 
 def run_webapp(_config, _db):
     log.info('Start WebApp')
