@@ -1,5 +1,10 @@
+import json
 import logging
 from tinydb import TinyDB, Query
+from datetime import datetime
+from pytz import timezone
+
+KR = timezone('Asia/Seoul')
 
 """
 Table: reports
@@ -19,6 +24,9 @@ class DataStore:
     def __init__(self, config):
         """ Init """
         self.db = TinyDB(config['db_path'])
+    
+    def __del__(self):
+        self.db.close()
     
     def store_report(self, report):
         reports = self.db.table('reports')
@@ -46,5 +54,17 @@ class DataStore:
         qry = Query()
         return reports.count(qry.author == user_id)
     
+    def get_rank_period(self, start_date, end_date):
+        reports = self.db.table('reports')
+        qry = Query()
+        start = KR.localize(
+            datetime.strptime(start_date, '%d %b %Y')
+                .replace(hour=0, minute=0, second=0))
 
-        
+        end = KR.localize(
+            datetime.strptime(end_date, '%d %b %Y')
+                .replace(hour=23, minute=59, second=59))
+
+        result = reports.search((qry.report_time >= start.timestamp()) &
+                             (qry.report_time <= end.timestamp()))
+        return result

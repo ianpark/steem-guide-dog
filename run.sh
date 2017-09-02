@@ -1,4 +1,4 @@
 mkdir db
 mkdir log
 export PYTHONPATH="${PYTHONPATH}:./webapp"
-python ./src/main.py
+python3 ./src/main.py

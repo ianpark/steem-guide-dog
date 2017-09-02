@@ -18,5 +18,12 @@
         }
     ],
     "whitelist": [""],
-    "blacklist": [""]
+    "blacklist": [""],
+    "reward": {
+        "medals" : [
+            "http://i.imgur.com/hv0zL8U.png",
+            "http://i.imgur.com/xe9CD0S.png",
+            "http://i.imgur.com/50zpz2p.png"],
+        "pool": 10
+    }
 }

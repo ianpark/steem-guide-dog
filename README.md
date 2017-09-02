@@ -6,6 +6,7 @@ Guide the users who are misusing the dedicated steem channels
 - Flask
 - TinyDB
 - steem-python
+- Postgresql
 
 https://github.com/steemit/steem-python
 
