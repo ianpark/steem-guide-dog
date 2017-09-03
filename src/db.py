@@ -20,11 +20,12 @@ class DataStore:
     DB class using TinyDB
     TODO: Reimplement usign proper DB
     """
+    db = TinyDB('db/db.json')
     log = logging.getLogger(__name__)
     def __init__(self, config):
-        """ Init """
-        self.db = TinyDB(config['db_path'])
-    
+        self.config = config
+        pass
+
     def __del__(self):
         self.db.close()
     

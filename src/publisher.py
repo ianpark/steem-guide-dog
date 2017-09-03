@@ -7,6 +7,7 @@ from db import DataStore
 
 class Publisher:
     def __init__(self, config):
+        self.db = DataStore(config)
         self.config = config
         pass
     
@@ -27,7 +28,8 @@ class Publisher:
                          'stake': round(float(counter[key])/len(records), 3)})
         return sorted(stat, key=itemgetter('count'), reverse=True)
 
-    def generate_report(self, records):
+    def generate_report(self, start_date, end_date):
+        records = self.db.get_rank_period(start_date, end_date)
         start = util.get_kr_time_from_timestamp(records[0]['report_time'])
         end = util.get_kr_time_from_timestamp(records[-1]['report_time'])
         md = util.get_kr_time(records[0]['report_time']).strftime('%-m월 %-d일')
@@ -66,8 +68,9 @@ class Publisher:
                 ),
                 '',
                 '## 오늘의 히어로즈',
+                '스팸글 신고는 귀찮고 시간도 잡아먹는 일입니다. 공익을 위한 이분들의 노력에'
+                ' 박수를 보냅니다. 감사의 표시로 작은 보상을 준비 하였습니다.',
                 '\n'.join(reporter_table),
-                '스팸글 신고는 귀찮고 시간도 잡아먹는 일입니다. 공익을 위한 이분들의 노력에 박수를 보냅니다. 감사의 표시로 작은 보상을 준비 하였습니다.'
                 '- 보상은 현재 보상 풀 최대치인 %s SBD 기준입니다.' % pool,
                 '- 현재 자동 송금기능은 제공되지 않으므로 수동으로 보내드립니다.',
                 '- 전체 누적 순위는 <a href="http://soboru.co.uk:5000">여기</a>에서'
@@ -85,4 +88,7 @@ class Publisher:
                 '오늘도 kr 커뮤니티를 위해 노력해주신 분들께 깊은 감사를 드립니다.',
                 '이 글에 **보팅**해 주시면 가이드독의 활동에 **큰힘**이 됩니다!',          
         ]
-        return cont
+        return {'reporter': reporter_table,
+                'spammer': spammer_table,
+                'pool': pool,
+                'body': '\n'.join(cont)}
