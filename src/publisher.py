@@ -28,7 +28,7 @@ class Publisher:
                          'stake': round(float(counter[key])/len(records), 3)})
         return sorted(stat, key=itemgetter('count'), reverse=True)
 
-    def generate_report(self, start_date, end_date):
+    def generate_report(self, start_date, end_date, point_base=True):
         records = self.db.get_rank_period(start_date, end_date)
         start = util.get_kr_time_from_timestamp(records[0]['report_time'])
         end = util.get_kr_time_from_timestamp(records[-1]['report_time'])
@@ -38,17 +38,38 @@ class Publisher:
         medals = self.config['reward']['medals']
 
         reporter_rank = self.get_rank(records)
-        reporter_table = ['불러주신분 | 횟수 | 비율 | 보상',
-                          '---  | ---   | ---   | ---',]
-        for idx, item in enumerate(reporter_rank):
-            reporter_table.append('@%s %s | %s | %s%% | %s SBD' % (
-                item['name'],
-                medals[idx] if idx < len(medals) else '',
-                item['count'],
-                round(item['stake'] * 100, 1),
-                round(pool * item['stake'], 2),
+        if point_base:
+            reporter_table = ['불러주신분 | 횟수 | 획득포인트',
+                              '---  | --- | ---']
+            for idx, item in enumerate(reporter_rank):
+                point = 1
+                if item['count'] >= 20:
+                    point = 5
+                if item['count'] >= 10:
+                    point = 3
+                elif item['count'] >= 5:
+                    point = 2
+                else:
+                    point = 1
+                reporter_table.append('@%s %s | %s | %s' % (
+                    item['name'],
+                    medals[idx] if idx < len(medals) else '',
+                    item['count'],
+                    point
+                    )
                 )
-            )
+        else:
+            reporter_table = ['불러주신분 | 횟수 | 비율 | 보상',
+                            '---  | ---   | ---   | ---',]
+            for idx, item in enumerate(reporter_rank):
+                reporter_table.append('@%s %s | %s | %s%% | %s SBD' % (
+                    item['name'],
+                    medals[idx] if idx < len(medals) else '',
+                    item['count'],
+                    round(item['stake'] * 100, 1),
+                    round(pool * item['stake'], 2),
+                    )
+                )
 
         spammer_rank = self.get_spammer_rank(records)
         spammer_table = ['계정 | 횟수', '---  | ---']
