@@ -28,8 +28,12 @@ class Publisher:
                          'stake': round(float(counter[key])/len(records), 3)})
         return sorted(stat, key=itemgetter('count'), reverse=True)
 
-    def generate_report(self, start_date, end_date, point_base=True):
+    def generate_report(self, start_date, end_date=None, point_base=True):
+        if not end_date:
+            end_date = start_date
         records = self.db.get_rank_period(start_date, end_date)
+        if not records:
+            return None
         start = util.get_kr_time_from_timestamp(records[0]['report_time'])
         end = util.get_kr_time_from_timestamp(records[-1]['report_time'])
         md = util.get_kr_time(records[0]['report_time']).strftime('%-m월 %-d일')
@@ -39,8 +43,8 @@ class Publisher:
 
         reporter_rank = self.get_rank(records)
         if point_base:
-            reporter_table = ['불러주신분 | 횟수 | 획득포인트',
-                              '---  | --- | ---']
+            reporter_table = ['불러주신분 | 횟수 | 획득포인트 | 누적포인트',
+                              '---  | --- | --- | ---']
             for idx, item in enumerate(reporter_rank):
                 point = 1
                 if item['count'] >= 20:
@@ -51,13 +55,18 @@ class Publisher:
                     point = 2
                 else:
                     point = 1
-                reporter_table.append('@%s %s | %s | %s' % (
+                self.db.add_point(item['name'], point, start_date)
+                self.db.update_point(item['name'])
+                new_point = self.db.get_point(item['name'])
+                reporter_table.append('@%s %s | %s | %s | %s' % (
                     item['name'],
                     medals[idx] if idx < len(medals) else '',
                     item['count'],
-                    point
+                    point,
+                    new_point['earned'] - new_point['used']
                     )
                 )
+                
         else:
             reporter_table = ['불러주신분 | 횟수 | 비율 | 보상',
                             '---  | ---   | ---   | ---',]
@@ -113,8 +122,6 @@ class Publisher:
                 '스팸글 신고는 귀찮고 시간도 잡아먹는 일입니다. 공익을 위한 이분들의 노력에'
                 ' 박수를 보냅니다. 감사의 표시로 작은 보상을 준비 하였습니다.',
                 '\n'.join(reporter_table),
-                '- 보상은 현재 보상 풀 최대치인 %s SBD 기준입니다.' % pool,
-                '- 현재 자동 송금기능은 제공되지 않으므로 수동으로 보내드립니다.',
                 '- 전체 누적 순위는 <a href="http://soboru.co.uk:5000">여기</a>에서'
                 ' 확인해 주세요.'
                 '',

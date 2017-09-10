@@ -3,8 +3,7 @@ import json
 from db import DataStore
 from publisher import Publisher
 
-def print_report():
-
+def print_report(date):
     pb = Publisher({
         "reward": {
             "medals" : [
@@ -14,12 +13,15 @@ def print_report():
             "pool": 10
         }
     })
-
-    report = pb.generate_report('2 Sep 2017', '2 Sep 2017')
-    print(report['body'])
-
-    
-    pass
+    report = pb.generate_report(date)
+    if report:
+        print(report['body'])
+    else:
+        print('No data')
 
 if __name__ == '__main__':
-    print_report()
+    if len(sys.argv) < 2:
+        print ('Usage: daily_report.py "2 Sep 2017"')
+        sys.exit()
+    print('Get daily report of %s' % sys.argv[1])
+    print_report(sys.argv[1])

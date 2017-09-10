@@ -12,9 +12,10 @@ function load_status() {
             scope.$apply(function() {
                 scope.dataset = dataset.reports;
             });
+            // Handle reporters
             scope = angular.element($("#reporters")).scope();
             scope.$apply(function() {
-                scope.dataset = dataset.reporters.sort(function(a, b) {
+                scope.dataset = dataset.users.sort(function(a, b) {
                     if (a[1] < b[1]) return 1;
                     if (a[1] > b[1]) return -1;
                     return 0;
@@ -22,7 +23,7 @@ function load_status() {
             });
             scope = angular.element($("#spammers")).scope();
             scope.$apply(function() {
-                scope.dataset = dataset.suspects.sort(function(a, b) {
+                scope.dataset = dataset.users.sort(function(a, b) {
                     if (a[1] < b[1]) return 1;
                     if (a[1] > b[1]) return -1;
                     return 0;

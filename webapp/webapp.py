@@ -1,6 +1,7 @@
 import json
 import logging
 import time
+from datetime import datetime
 from flask import Flask, render_template, send_from_directory
 
 log = logging.getLogger(__name__)
@@ -9,29 +10,16 @@ app = Flask(__name__, static_url_path='/static')
 config = None
 db = None
 
-def dict_to_list(source):
-    list_keys = [ k for k in source ]
-    list_values = [ v for v in source.values() ]
-    list_key_value = [ [k,v] for k, v in source.items() ]
-    return list_key_value
-
 def get_data():
-    data = db.read_all()
-    reporters = {}
-    suspects = {}
-    for i in data:
-        if i['reporter'] in reporters:
-            reporters[i['reporter']] += 1
-        else:
-            reporters[i['reporter']] = 1
-
-        if i['author'] in suspects:
-            suspects[i['author']] += 1
-        else:
-            suspects[i['author']] = 1
-
-    return {'reporters': dict_to_list(reporters),
-            'suspects': dict_to_list(suspects),
+    data = db.read_all(datetime.now().timestamp() - 60 * 60 * 72)
+    user = [
+        [x['user_id'],
+        x['report_count'],
+        x['spam_count'],
+        x['point_earned'],
+        x['point_used']] for x in db.get_all_user()
+    ]
+    return {'users': user,
             'reports': data}
 
 # For all static files 
