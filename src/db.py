@@ -123,7 +123,7 @@ class DataStore:
         reports.insert({
             'user_id': user_id, 
             'amount': amount, 
-            'date': datetime.now().strftime('%d %b %Y')
+            'date': date
             })
         self.update_point(user_id)
     

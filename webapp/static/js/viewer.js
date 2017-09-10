@@ -10,7 +10,7 @@ function load_status() {
                 return el[1] > 0;
             });
             dataset.spammers = dataset.users.filter(function(el) {
-                return el[2] > 0;
+                return el[2] >= 3;
             });
             var scope = null;
             scope = angular.element($("#reports")).scope();
@@ -29,8 +29,8 @@ function load_status() {
             scope = angular.element($("#spammers")).scope();
             scope.$apply(function() {
                 scope.dataset = dataset.spammers.sort(function(a, b) {
-                    if (a[1] < b[1]) return 1;
-                    if (a[1] > b[1]) return -1;
+                    if (a[2] < b[2]) return 1;
+                    if (a[2] > b[2]) return -1;
                     return 0;
                 });
             });
