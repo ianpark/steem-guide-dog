@@ -2,7 +2,7 @@
     "keyfile_path": "~/.steem/keys.json",
     "main_tag": "kr",
     "tag_prefix": "kr-",
-    "signals": ["kr-guide!", "전혀이해가안돼!"],
+    "signals": [],
     "posters": [
         {
             "account": "krguidedog",

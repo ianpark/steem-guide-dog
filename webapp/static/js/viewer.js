@@ -6,7 +6,12 @@ function load_status() {
         url: "/status",
         success: function( data ) {
             dataset = JSON.parse(data);
-            console.log(dataset);
+            dataset.reporters = dataset.users.filter(function(el) {
+                return el[1] > 0;
+            });
+            dataset.spammers = dataset.users.filter(function(el) {
+                return el[2] > 0;
+            });
             var scope = null;
             scope = angular.element($("#reports")).scope();
             scope.$apply(function() {
@@ -15,7 +20,7 @@ function load_status() {
             // Handle reporters
             scope = angular.element($("#reporters")).scope();
             scope.$apply(function() {
-                scope.dataset = dataset.users.sort(function(a, b) {
+                scope.dataset = dataset.reporters.sort(function(a, b) {
                     if (a[1] < b[1]) return 1;
                     if (a[1] > b[1]) return -1;
                     return 0;
@@ -23,7 +28,7 @@ function load_status() {
             });
             scope = angular.element($("#spammers")).scope();
             scope.$apply(function() {
-                scope.dataset = dataset.users.sort(function(a, b) {
+                scope.dataset = dataset.spammers.sort(function(a, b) {
                     if (a[1] < b[1]) return 1;
                     if (a[1] > b[1]) return -1;
                     return 0;
