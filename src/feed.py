@@ -24,7 +24,7 @@ class Feed:
 
     def check_signal(self, plain_post):
         # Check signals in the body
-        for signal in self.config['signals']:
+        for signal in self.config['report_signals'] + self.config['praise_signals']:
             # Match the first signal only
             if signal in plain_post.get('body',''):
                 return signal
@@ -40,6 +40,12 @@ class Feed:
             return
         post = Post(plain_post)
         post['bot_signal'] = signal_found
+        if post['bot_signal'] in self.config['report_signals']:
+            post['signal_type'] = 'spam'
+        elif post['bot_signal'] in self.config['praise_signals']:
+            post['signal_type'] = 'praise'
+        else:
+            post['signal_type'] = 'unknown'
         # Skip comments of which depth is not 1
         if post.get('depth', 0) != 1:
             return

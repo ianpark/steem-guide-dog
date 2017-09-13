@@ -33,20 +33,39 @@ class DataStore:
         self.db.close()
         self.db_point.close()
     
-    def store_report(self, report):
-        reports = self.db.table('reports')
+    def store_report(self, post):
+        tbl = self.db.table('reports')
         qry = Query()
-        result = reports.contains(
+        result = tbl.contains(
                     (qry.author == report['author']) &
                     (qry.permlink == report['permlink']))
         if result:
             self.log.info('Already exists: %s' % result)
             return False
 
-        reports.insert(report)
+        tbl.insert({
+            'reporter': post['author'],
+            'author': post['parent_author'],
+            'permlink': post['parent_permlink'],
+            'report_time': datetime.now(),
+            'bot_signal': post['bot_signal']
+        })
         self.add_user(report['reporter'])
         self.add_spammer(report['author'])
+
         return True
+    
+    def store_praise(self, post):
+        tbl = self.db.table('praises')
+        tbl.insert({
+            'reporter': post['author'],
+            'author': post['parent_author'],
+            'permlink': post['parent_permlink'],
+            'report_time': datetime.now(),
+            'bot_signal': post['bot_signal'],
+            'processed': False
+        }))
+        return True   
 
     def add_user(self, user_id):
         user = self.db_user.table('user')

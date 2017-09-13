@@ -55,31 +55,38 @@ class Bot:
             self.queue.appendleft(result['post'])
 
     def is_valid(self, post):
-        if post['author'] == post['parent_author']:
-            self.log.info('Author and parent author is the same')
-            return False
-        if post['author'] in self.config['blacklist']:
-            self.log.info('Black list match: ignore the report from %s' % post['author'])
-            return False
-        if post['parent_author'] in self.config['whitelist']:
-            self.log.info('White list match: ignore the report for %s' % post['parent_author'])
-            return False
+        if post['signal_type'] == 'praise':
+            # Block self praise
+            if post['author'] == post['parent_author']:
+                self.log.info('Author and parent author is the same')
+                return False
+        elif post['signal_type'] == 'spam':
+            if post['author'] == post['parent_author']:
+                self.log.info('Author and parent author is the same')
+                return False
+            if post['author'] in self.config['blacklist']:
+                self.log.info('Black list match: ignore the report from %s' % post['author'])
+                return False
+            if post['parent_author'] in self.config['whitelist']:
+                self.log.info('White list match: ignore the report for %s' % post['parent_author'])
+                return False
         return True
 
-    def save_report(self, post):
-        result = self.db.store_report(
-            {
-                'reporter': post['author'],
-                'author': post['parent_author'],
-                'permlink': post['parent_permlink'],
-                'report_time': datetime.now(),
-                'bot_signal': post['bot_signal']
-            })
+    def save_to_db(self, post):
+        if post['signal_type']  == 'spam':
+            result = self.db.store_report(post)
+        elif post['signal_type'] == 'praise']:
+            result = self.db.store_praise(post)
         return result
 
-    def leave_comment(self, post):
-        post['reported_count'] = self.db.get_reported_count(post['parent_author'])
-        self.posters.popleft().leave_comment(post)
+    def process_post(self, post):
+        if post['signal_type'] == 'spam':
+            post['reported_count'] = self.db.get_reported_count(post['parent_author'])
+            self.posters.popleft().leave_warning(post)
+        elif post['signal_type'] == 'praise':
+            self.posters.popleft().leave_praise(post)
+        else:
+            pass
 
     async def work(self):
         self.log.info('Start Bot')
@@ -95,11 +102,11 @@ class Bot:
                         if not self.is_valid(post):
                             self.log.info('not valid')
                             break
-                        if not self.save_report(post):
+                        if not self.save_to_db(post):
                             self.log.info('failed to save')
                             break
                         # Dispatch the past to the idle poster
-                        self.leave_comment(post)
+                        self.process_post(post)
                     except Exception as e:
                         self.log.info('Error! %s' % e)
                         pass

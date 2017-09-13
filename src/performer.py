@@ -33,10 +33,9 @@ class Performer:
         lines.extend(self.message)
         return '\n'.join(lines)
 
-    def leave_comment(self, post):
+    def process_warning(self, post):
         self.log.info("ID: %s, %s (%s)" % (post['identifier'], post, post['bot_signal']))
         self.log.info ("%s: %s/%s > %s" %(post['root_title'], post['parent_author'], post['author'], post['body']))
-        self.log.info (self.generate_message(post))
         result = True
         try:
             self.steem.commit.post(
@@ -60,3 +59,28 @@ class Performer:
                 'poster': self,
                 'post': post})
 
+    def leave_praise(self, post):
+        self.log.info("ID: %s, %s (%s)" % (post['identifier'], post, post['bot_signal']))
+        result = True
+        try:
+            self.steem.commit.post(
+                title='guide puppy',
+                body=self.generate_message(post),
+                author=self.poster['account'],
+                permlink=None,
+                reply_identifier=post['parent_post_id'],
+                json_metadata=None,
+                comment_options=None,
+                community=None,
+                tags=None,
+                beneficiaries=None,
+                self_vote=False
+            )
+            parent_post = Post(post['parent_post_id'])
+            parent_post.upvote(10)
+        except Exception as e:
+            self.log.info(e)
+            result = False        
+        self.on_complete({'result': True,
+                'poster': self,
+                'post': post})
