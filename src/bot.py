@@ -75,7 +75,7 @@ class Bot:
     def save_to_db(self, post):
         if post['signal_type']  == 'spam':
             result = self.db.store_report(post)
-        elif post['signal_type'] == 'praise']:
+        elif post['signal_type'] == 'praise':
             result = self.db.store_praise(post)
         return result
 

@@ -14,7 +14,8 @@ class Performer:
         self.steem = Steem(keys=priv_keys)
         self.last_posting = datetime.now() - POSTING_GUARD_TIME
 
-        with open(poster['message_file']) as f:
+    def read_message_files(self):
+        with open(self.poster['message_file']) as f:
             message = f.readlines()
             self.message = [x.strip() for x in message]
 
@@ -23,7 +24,7 @@ class Performer:
             return False
         return True
 
-    def generate_message(self,post):
+    def generate_warning_message(self,post):
         greet = ('Nice to meet you!' if post['reported_count'] <= 1
                 else 'We have met %s times already!' % post['reported_count'])
         lines = [random.choice(self.poster['photo']),
@@ -40,7 +41,7 @@ class Performer:
         try:
             self.steem.commit.post(
                 title='guide puppy',
-                body=self.generate_message(post),
+                body=self.generate_warning_message(post),
                 author=self.poster['account'],
                 permlink=None,
                 reply_identifier=post['parent_post_id'],
@@ -59,13 +60,24 @@ class Performer:
                 'poster': self,
                 'post': post})
 
+    def generate_praise_message(self, post):
+        rt = ['멋진', '섹시한', '훈훈한', '시크한', '요염한', '지루한', '질척거리는', '흥분되는', '난처한',
+            '음흉한', '흥겨운', '잊지못할', '으리으리한', '감동적인', '놀라운', '슬픈', '배꼽잡는', '러블리한']
+        lines = [random.choice(self.poster['photo']),
+                '%s @%s님 안녕하세요! %s @%s님 소개로 왔어요. 멍멍!' % (random.choice(rt), random.choice(rt), post['parent_author'], post['author']),
+                '저는 스팸 없는 세상을 꿈꾸는 kr 가이드독이에요.'
+                '좋은 글 올려주신것 너무 감사해요. 정말 %s 글이네요!' % (random.choice(rt)),
+                '작지만 찐한 풀보팅 올리고 갑니다! 멍멍!'
+                ]
+        return '\n'.join(lines)
+
     def leave_praise(self, post):
         self.log.info("ID: %s, %s (%s)" % (post['identifier'], post, post['bot_signal']))
         result = True
         try:
             self.steem.commit.post(
                 title='guide puppy',
-                body=self.generate_message(post),
+                body=self.generate_praise_message(post),
                 author=self.poster['account'],
                 permlink=None,
                 reply_identifier=post['parent_post_id'],

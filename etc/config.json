@@ -2,7 +2,7 @@
     "keyfile_path": "~/.steem/keys.json",
     "main_tag": "kr",
     "tag_prefix": "kr-",
-
+    "report_signals": [],
     "praise_signals": ["@칭찬해"],
     "posters": [
         {
