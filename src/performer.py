@@ -14,6 +14,7 @@ class Performer:
         self.on_complete = on_complete
         self.steem = Steem(keys=priv_keys)
         self.last_posting = datetime.now() - POSTING_GUARD_TIME
+        self.read_message_files()
 
     def read_message_files(self):
         with open(self.poster['message_file']) as f:
