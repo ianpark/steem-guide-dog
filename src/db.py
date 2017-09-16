@@ -50,7 +50,7 @@ class DataStore:
             'report_time': datetime.now(),
             'bot_signal': post['bot_signal']
         })
-        self.add_user(post['reporter'])
+        self.add_user(post['author'])
         self.add_spammer(post['author'])
 
         return True
