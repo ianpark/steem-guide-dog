@@ -37,8 +37,8 @@ class DataStore:
         tbl = self.db.table('reports')
         qry = Query()
         result = tbl.contains(
-                    (qry.author == report['author']) &
-                    (qry.permlink == report['permlink']))
+                    (qry.author == post['author']) &
+                    (qry.permlink == post['permlink']))
         if result:
             self.log.info('Already exists: %s' % result)
             return False
@@ -50,8 +50,8 @@ class DataStore:
             'report_time': datetime.now(),
             'bot_signal': post['bot_signal']
         })
-        self.add_user(report['reporter'])
-        self.add_spammer(report['author'])
+        self.add_user(post['reporter'])
+        self.add_spammer(post['author'])
 
         return True
     
