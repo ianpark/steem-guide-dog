@@ -52,11 +52,14 @@ class Performer:
                 community=None,
                 tags=None,
                 beneficiaries=None,
-                self_vote=True
+                self_vote=False
             )
-            my_comment = my_comment['operations'][0][1]
-            post_id = '@%s/%s' % (my_comment['author'], my_comment['permlink'])
-            self.steem.commit.vote(post_id, 50, self.poster['account'])
+            try:
+                my_comment = my_comment['operations'][0][1]
+                post_id = '@%s/%s' % (my_comment['author'], my_comment['permlink'])
+                self.steem.commit.vote(post_id, 50, self.poster['account'])
+            except:
+                pass
         except Exception as e:
             self.log.info(e)
             result = False
