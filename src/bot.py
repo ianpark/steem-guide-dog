@@ -98,7 +98,7 @@ class Bot:
     def process_post(self, post):
         if post['signal_type'] == 'spam':
             post['reported_count'] = self.db.get_reported_count(post['parent_author'])
-            self.posters.popleft().leave_warning(post)
+            self.posters.popleft().process_warning(post)
         elif post['signal_type'] == 'praise':
             point = self.db.get_usable_point(post['author'])
             self.log.info('Praise request - user: %s point: %s' % (post['author'], point ))
