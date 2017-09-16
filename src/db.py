@@ -64,7 +64,7 @@ class DataStore:
             'report_time': datetime.now(),
             'bot_signal': post['bot_signal'],
             'processed': False
-        }))
+        })
         return True   
 
     def add_user(self, user_id):
@@ -162,5 +162,9 @@ class DataStore:
         for earned in self.db_point.table('earned').search(qry.user_id == user_id):
             earned_point += earned['amount']
         for used in self.db_point.table('used').search(qry.user_id == user_id):
-            used_point += earned['amount']
+            used_point += used['amount']
         return {'earned': earned_point, 'used': used_point}
+
+    def get_usable_point(self, user_id):
+        point = self.get_point(user_id)
+        return (point['earned'] - point['used'])

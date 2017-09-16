@@ -8,19 +8,18 @@ log = logging.getLogger(__name__)
 app = Flask(__name__, static_url_path='/static')
 
 config = None
-db = None
+data = None
 
 def get_data():
-    data = db.read_all(datetime.now().timestamp() - 60 * 60 * 72)
     user = [
         [x['user_id'],
         x['report_count'],
         x['spam_count'],
         x['point_earned'],
-        x['point_used']] for x in db.get_all_user()
+        x['point_used']] for x in data.users
     ]
     return {'users': user,
-            'reports': data}
+            'reports': data.reports}
 
 # For all static files 
 @app.route('/<path:path>')
@@ -37,9 +36,9 @@ def main_page():
 def status():
     return json.dumps(get_data())
 
-def run_webapp(_config, _db):
+def run_webapp(_config, _data):
     log.info('Start WebApp')
-    global config, db
+    global config, data
     config = _config
-    db = _db
+    data = _data
     app.run(host='0.0.0.0', debug = False)

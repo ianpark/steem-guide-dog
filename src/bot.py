@@ -9,6 +9,7 @@ import os
 
 from concurrent.futures import ThreadPoolExecutor
 from time import sleep
+from data import Data
 from feed import Feed
 from performer import Performer
 from datetime import datetime
@@ -20,7 +21,7 @@ from webapp import run_webapp
 CONFIG_FILE_PATH = 'etc/config.json'
 
 class Bot:
-    executor = ThreadPoolExecutor(max_workers=4)
+    executor = ThreadPoolExecutor(max_workers=8)
     log = logging.getLogger(__name__)
     def __init__(self):
         with open(CONFIG_FILE_PATH) as config:    
@@ -30,6 +31,7 @@ class Bot:
         self.queue = deque()
         self.posters = deque()
         self.db = DataStore(self.config)
+        self.data = Data()
         keypath = os.path.expanduser(self.config['keyfile_path'])
         with open(keypath) as keyfile:    
             keyfile_json = json.load(keyfile)
@@ -40,19 +42,33 @@ class Bot:
                             keyfile_json[poster['account']],
                             self.on_complete))
         self.run_flag = True
-        self.executor.submit(run_webapp, self.config, self.db)
+        self.refresh_data_cache()
+        self.executor.submit(run_webapp, self.config, self.data)
     
     def on_data(self, post):
         """ Should not block this function """
         self.log.info('Append data: %s' % post )
         self.queue.append(post)
     
+    def refresh_data_cache(self):
+        # Update the data storage
+        self.data.reports = self.db.read_all(datetime.now().timestamp() - 60 * 60 * 72)
+        self.data.users = self.db.get_all_user()
+
     def on_complete(self, result):
         self.log.info('Finished: %s' % result)
-        self.loop.call_later(20, self.posters.append, result['poster'])
+        self.loop.call_later(result.get('wait_for', 20), self.posters.append, result['poster'])
         if not result['result']:
             self.log.info('Append data to the left: %s' % result['post'] )
             self.queue.appendleft(result['post'])
+        else:
+            # Use point
+            author = result['post']['author']
+            used_point = result['post'].get('consume_point', 0)
+            if used_point:
+                self.db.use_point(author, used_point)
+            # Refresh data cache
+            self.refresh_data_cache()
 
     def is_valid(self, post):
         if post['signal_type'] == 'praise':
@@ -84,7 +100,15 @@ class Bot:
             post['reported_count'] = self.db.get_reported_count(post['parent_author'])
             self.posters.popleft().leave_warning(post)
         elif post['signal_type'] == 'praise':
-            self.posters.popleft().leave_praise(post)
+            point = self.db.get_usable_point(post['author'])
+            self.log.info('Praise request - user: %s point: %s' % (post['author'], point ))
+            if point >= 3:
+                
+                post['consume_point'] = 3
+                self.posters.popleft().leave_praise(post)
+            else:
+                self.log.info('Not enough point! %s %s' % (post['author'], point))
+                self.posters.popleft().send_no_point_alarm(post)
         else:
             pass
 

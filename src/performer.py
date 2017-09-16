@@ -2,6 +2,7 @@ import logging
 import random
 from datetime import datetime, timedelta
 from steem import Steem
+from steem.post import Post
 
 POSTING_GUARD_TIME = timedelta(seconds=20)
 
@@ -39,7 +40,7 @@ class Performer:
         self.log.info ("%s: %s/%s > %s" %(post['root_title'], post['parent_author'], post['author'], post['body']))
         result = True
         try:
-            self.steem.commit.post(
+            my_comment = self.steem.commit.post(
                 title='guide puppy',
                 body=self.generate_warning_message(post),
                 author=self.poster['account'],
@@ -52,30 +53,33 @@ class Performer:
                 beneficiaries=None,
                 self_vote=True
             )
+            my_comment = my_comment['operations'][0][1]
+            post_id = '@%s/%s' % (my_comment['author'], my_comment['permlink'])
+            self.steem.commit.vote(post_id, 50, self.poster['account'])
         except Exception as e:
             self.log.info(e)
             result = False
             
-        self.on_complete({'result': True,
+        self.on_complete({'result': result, 'wait_for': 20,
                 'poster': self,
                 'post': post})
 
     def generate_praise_message(self, post):
-        rt = ['멋진', '섹시한', '훈훈한', '시크한', '요염한', '지루한', '질척거리는', '흥분되는', '난처한',
-            '음흉한', '흥겨운', '잊지못할', '으리으리한', '감동적인', '놀라운', '슬픈', '배꼽잡는', '러블리한']
-        lines = [random.choice(self.poster['photo']),
-                '%s @%s님 안녕하세요! %s @%s님 소개로 왔어요. 멍멍!' % (random.choice(rt), random.choice(rt), post['parent_author'], post['author']),
-                '저는 스팸 없는 세상을 꿈꾸는 kr 가이드독이에요.'
-                '좋은 글 올려주신것 너무 감사해요. 정말 %s 글이네요!' % (random.choice(rt)),
-                '작지만 찐한 풀보팅 올리고 갑니다! 멍멍!'
-                ]
-        return '\n'.join(lines)
+        rt = ['멋진', '섹시한', '훈훈한', '시크한', '요염한', '흥분되는', '짱 재밌는', '잊지못할', '감동적인', '놀라운', '배꼽잡는', '러블리한']
+        msg = ('%s @%s님 안녕하세요! 저는 스팸 없는 세상을 꿈꾸는 kr 가이드독이에요. '
+               '%s @%s님 소개로 왔어요. 칭찬이 자자~ 하시더라구요. ^^ '
+                '%s글 올려주신것 너무 감사해요. '
+                '작은 선물로 0.5 SBD를 보내드립니다 ^^'
+                % (random.choice(rt),post['parent_author'], random.choice(rt), post['author'], random.choice(rt)))
+        msg = ('<table><tr><td>%s</td><td>%s</td></tr></table>'
+                % ('https://i.imgur.com/7KVQf6i.jpg', msg))
+        return msg
 
     def leave_praise(self, post):
         self.log.info("ID: %s, %s (%s)" % (post['identifier'], post, post['bot_signal']))
         result = True
         try:
-            self.steem.commit.post(
+            my_comment = self.steem.commit.post(
                 title='guide puppy',
                 body=self.generate_praise_message(post),
                 author=self.poster['account'],
@@ -88,11 +92,35 @@ class Performer:
                 beneficiaries=None,
                 self_vote=False
             )
-            parent_post = Post(post['parent_post_id'])
-            parent_post.upvote(10)
+            memo = '@%s 님께서 가이드독 활동을 통해 모은 포인트로 감사의 표시를 하였습니다. 해당 글을 확인해 주세요! https://steemit.com/%s' % (post['author'], post['parent_post_id'])
+            self.steem.commit.transfer(
+                to=post['parent_author'],
+                amount=0.5,
+                asset='SBD',
+                account=self.poster['account'],
+                memo=memo)
+            # upvote for promotion
+            my_comment = my_comment['operations'][0][1]
+            post_id = '@%s/%s' % (my_comment['author'], my_comment['permlink'])
+            self.steem.commit.vote(post_id, 20, self.poster['account'])
+
         except Exception as e:
             self.log.info(e)
             result = False        
-        self.on_complete({'result': True,
+        self.on_complete({'result': result, 'wait_for': 20,
+                'poster': self,
+                'post': post})
+    def send_no_point_alarm(self, post):
+        try:
+            memo = '가이드독 포인트가 부족합니다. 스팸글 신고를 통해 포인트를 쌓아주세요. 자세한 정보는 저의 계정을 방문하셔서 최신 글을 읽어주세요.'
+            self.steem.commit.transfer(
+                to=post['author'],
+                amount=0.001,
+                asset='SBD',
+                account=self.poster['account'],
+                memo=memo)
+        except Exception as e:
+            self.log.info(e)
+        self.on_complete({'result': True, 'wait_for': 1,
                 'poster': self,
                 'post': post})
