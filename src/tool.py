@@ -42,5 +42,5 @@ def leave_praise(post=None):
     if not post:
         post = get_post()
 
-print(db.get_point('krguidedog'))
-print(db.get_usable_point('krguidedog'))
+print(db.get_point('asbear'))
+print(db.get_usable_point('asbear'))
