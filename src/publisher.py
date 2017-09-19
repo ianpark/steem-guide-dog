@@ -88,7 +88,7 @@ class Publisher:
             )
 
         title = '🐶 가이드독 스팸신고 활동 보고드립니다. (%s)' % period
-        cont = ['<center>http://i.imgur.com/mxdnAGI.png</center>',
+        cont = ['<center>https://steemitimages.com/0x0/https://i.imgur.com/vZYwuYc.jpg</center>',
                 '안녕하세요? @asbear입니다. %s의 KR가이드독 활동 내역을 보고드립니다.' % md,
                 '',
                 '%s에는 %s분께서 %s개의 스팸 글을 신고해 주셨습니다. %s명의 스패머들에게는 kr가이드독이 '
@@ -100,6 +100,7 @@ class Publisher:
                 'kr 태그나 kr- 로 시작하는 태그를 달고있는 글중에 스팸글을 발견하시면, 다음 명령어중 하나를 포함한 댓글을 달아주세요. 명령어만 넣어도 되고, 문장이랑 섞어서 넣어도 인식 됩니다.',
                 '- kr-guide!',
                 '- 전혀이해가안돼!',
+                '- 무슨개소리야!',
                 '',
                 '스팸글 판단 기준:',
                 '- 한글/영문 상관없이 명백히 표절인 글',
