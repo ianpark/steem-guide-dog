@@ -51,7 +51,7 @@ class DataStore:
             'bot_signal': post['bot_signal']
         })
         self.add_user(post['author'])
-        self.add_spammer(post['author'])
+        self.add_spammer(post['parent_author'])
 
         return True
     
