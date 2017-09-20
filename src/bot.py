@@ -102,9 +102,8 @@ class Bot:
         elif post['signal_type'] == 'praise':
             point = self.db.get_usable_point(post['author'])
             self.log.info('Praise request - user: %s point: %s' % (post['author'], point ))
-            if point >= 3:
-                
-                post['consume_point'] = 3
+            if point >= 1:
+                post['consume_point'] = 1
                 self.posters.popleft().leave_praise(post)
             else:
                 self.log.info('Not enough point! %s %s' % (post['author'], point))

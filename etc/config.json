@@ -3,7 +3,7 @@
     "main_tag": "kr",
     "tag_prefix": "kr-",
     "report_signals": ["kr-guide!", "전혀이해가안돼!", "무슨개소리야!"],
-    "praise_signals": ["@칭찬해"],
+    "praise_signals": ["@칭찬해", "@아주칭찬해"],
     "posters": [
         {
             "account": "krguidedog",

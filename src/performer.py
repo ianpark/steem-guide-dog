@@ -69,11 +69,11 @@ class Performer:
                 'post': post})
 
     def generate_praise_message(self, post):
-        rt = ['멋진', '섹시한', '훈훈한', '시크한', '요염한', '흥분되는', '짱 재밌는', '잊지못할', '감동적인', '놀라운', '배꼽잡는', '러블리한']
-        msg = ('%s @%s님 안녕하세요! 저는 스팸 없는 세상을 꿈꾸는 kr 가이드독이에요. '
-               '%s @%s님 소개로 왔어요. 칭찬이 자자~ 하시더라구요. ^^ '
+        rt = ['멋진', '섹시한', '훈훈한', '시크한', '요염한', '흥분되는', '짱재밌는', '잊지못할', '감동적인', '놀라운', '배꼽잡는', '러블리한', '쏘쿨한']
+        msg = ('%s **@%s님** 안녕하세요! 저는 스팸 없는 세상을 꿈꾸는 kr 가이드독이에요. '
+               '%s **@%s님** 소개로 왔어요. 칭찬이 자자~ 하시더라구요. ^^ '
                 '%s글 올려주신것 너무 감사해요. '
-                '작은 선물로 0.5 SBD를 보내드립니다 ^^'
+                '작은 선물로 0.2 SBD를 보내드립니다 ^^'
                 % (random.choice(rt),post['parent_author'], random.choice(rt), post['author'], random.choice(rt)))
         msg = ('<table><tr><td>%s</td><td>%s</td></tr></table>'
                 % ('https://i.imgur.com/7KVQf6i.jpg', msg))
@@ -99,7 +99,7 @@ class Performer:
             memo = '@%s 님께서 가이드독 활동을 통해 모은 포인트로 감사의 표시를 하였습니다. 해당 글을 확인해 주세요! https://steemit.com/%s' % (post['author'], post['parent_post_id'])
             self.steem.commit.transfer(
                 to=post['parent_author'],
-                amount=0.5,
+                amount=0.2,
                 asset='SBD',
                 account=self.poster['account'],
                 memo=memo)
