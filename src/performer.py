@@ -70,8 +70,8 @@ class Performer:
 
     def generate_praise_message(self, post):
         rt = ['멋진', '섹시한', '훈훈한', '시크한', '요염한', '흥분되는', '짱재밌는', '잊지못할', '감동적인', '놀라운', '배꼽잡는', '러블리한', '쏘쿨한']
-        msg = ('%s **@%s님** 안녕하세요! 저는 스팸 없는 세상을 꿈꾸는 kr 가이드독이에요. '
-               '%s **@%s님** 소개로 왔어요. 칭찬이 자자~ 하시더라구요. ^^ '
+        msg = ('%s @%s님 안녕하세요! 저는 스팸 없는 세상을 꿈꾸는 kr 가이드독이에요. '
+               '%s @%s님 소개로 왔어요. 칭찬이 자자~ 하시더라구요. ^^ '
                 '%s글 올려주신것 너무 감사해요. '
                 '작은 선물로 0.2 SBD를 보내드립니다 ^^'
                 % (random.choice(rt),post['parent_author'], random.choice(rt), post['author'], random.choice(rt)))
@@ -96,6 +96,11 @@ class Performer:
                 beneficiaries=None,
                 self_vote=False
             )
+            # upvote for promotion
+            my_comment = my_comment['operations'][0][1]
+            post_id = '@%s/%s' % (my_comment['author'], my_comment['permlink'])
+            self.steem.commit.vote(post_id, 20, self.poster['account'])
+
             memo = '@%s 님께서 가이드독 활동을 통해 모은 포인트로 감사의 표시를 하였습니다. 해당 글을 확인해 주세요! https://steemit.com/%s' % (post['author'], post['parent_post_id'])
             self.steem.commit.transfer(
                 to=post['parent_author'],
@@ -103,10 +108,6 @@ class Performer:
                 asset='SBD',
                 account=self.poster['account'],
                 memo=memo)
-            # upvote for promotion
-            my_comment = my_comment['operations'][0][1]
-            post_id = '@%s/%s' % (my_comment['author'], my_comment['permlink'])
-            self.steem.commit.vote(post_id, 20, self.poster['account'])
 
         except Exception as e:
             self.log.info(e)
