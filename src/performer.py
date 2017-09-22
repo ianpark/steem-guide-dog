@@ -1,5 +1,6 @@
 import logging
 import random
+import time 
 from datetime import datetime, timedelta
 from steem import Steem
 from steem.post import Post
@@ -54,12 +55,13 @@ class Performer:
                 beneficiaries=None,
                 self_vote=False
             )
+            time.sleep(2)
             try:
                 my_comment = my_comment['operations'][0][1]
                 post_id = '@%s/%s' % (my_comment['author'], my_comment['permlink'])
                 self.steem.commit.vote(post_id, 50, self.poster['account'])
             except:
-                pass
+                self.log.info('Failed to upvote!')
         except Exception as e:
             self.log.info(e)
             result = False
@@ -96,18 +98,25 @@ class Performer:
                 beneficiaries=None,
                 self_vote=False
             )
+            time.sleep(2)
             # upvote for promotion
-            my_comment = my_comment['operations'][0][1]
-            post_id = '@%s/%s' % (my_comment['author'], my_comment['permlink'])
-            self.steem.commit.vote(post_id, 20, self.poster['account'])
-
-            memo = '@%s 님께서 가이드독 활동을 통해 모은 포인트로 감사의 표시를 하였습니다. 해당 글을 확인해 주세요! https://steemit.com/%s' % (post['author'], post['parent_post_id'])
-            self.steem.commit.transfer(
-                to=post['parent_author'],
-                amount=0.2,
-                asset='SBD',
-                account=self.poster['account'],
-                memo=memo)
+            try:
+                my_comment = my_comment['operations'][0][1]
+                post_id = '@%s/%s' % (my_comment['author'], my_comment['permlink'])
+                self.steem.commit.vote(post_id, 20, self.poster['account'])
+            except:
+                self.log.info('Failed to upvote!')
+            time.sleep(2)
+            try:
+                memo = '@%s 님께서 가이드독 활동을 통해 모은 포인트로 감사의 표시를 하였습니다. 해당 글을 확인해 주세요! https://steemit.com/%s' % (post['author'], post['parent_post_id'])
+                self.steem.commit.transfer(
+                    to=post['parent_author'],
+                    amount=0.2,
+                    asset='SBD',
+                    account=self.poster['account'],
+                    memo=memo)
+            except:
+                self.log.info('Failed to transfer 0.2 to %s!' % post['parent_author'])
 
         except Exception as e:
             self.log.info(e)
