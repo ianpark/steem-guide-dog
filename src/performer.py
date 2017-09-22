@@ -78,7 +78,7 @@ class Performer:
                 '작은 선물로 0.2 SBD를 보내드립니다 ^^'
                 % (random.choice(rt),post['parent_author'], random.choice(rt), post['author'], random.choice(rt)))
         msg = ('<table><tr><td>%s</td><td>%s</td></tr></table>'
-                % ('https://i.imgur.com/7KVQf6i.jpg', msg))
+                % (random.choice(self.poster['praise_photo']), msg))
         return msg
 
     def leave_praise(self, post):
