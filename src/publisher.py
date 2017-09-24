@@ -121,6 +121,8 @@ class Publisher:
                 '### 칭찬해',
                 '- 글에 @칭찬해가 포함된 댓글을 달면, 가이드독이 와서 칭찬댓글과 0.2 SBD를 선물합니다.',
                 '- 1 포인트 사용됩니다.',
+                '- 특별 고용된 칭찬 드림팀입니다.',
+                '<table><tr><td>http://i.imgur.com/7KVQf6i.jpg</td><td>http://i.imgur.com/pIqqVbm.png</td><td>http://i.imgur.com/Ft0qXcQ.png</td><td>http://i.imgur.com/oACf3Af.png</td><td>http://i.imgur.com/U6KILpr.png</td></tr><tr><td>개대리</td><td>개수습</td><td>개과장</td><td>개부장</td><td>개사원</td></tr></table>',
                 '',
                 '## 오늘의 히어로즈',
                 '스팸글 신고는 귀찮고 시간도 잡아먹는 일입니다. 공익을 위한 이분들의 노력에'
