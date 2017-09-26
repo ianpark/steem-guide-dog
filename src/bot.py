@@ -107,7 +107,8 @@ class Bot:
                 self.posters.popleft().leave_praise(post)
             else:
                 self.log.info('Not enough point! %s %s' % (post['author'], point))
-                self.posters.popleft().send_no_point_alarm(post)
+                # For now, let's just ignore
+                # self.posters.popleft().send_no_point_alarm(post)
         else:
             pass
 
