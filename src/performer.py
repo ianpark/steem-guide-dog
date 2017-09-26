@@ -86,7 +86,7 @@ class Performer:
                     random.choice(rt)))
         elif post['bot_signal'] == '@축하해':
             msg = ('%s @%s님 안녕하세요! %s @%s님이 그러는데 정말 %s 일이 있으시다고 하더라구요!! '
-                    '기분좋은 날 맛좋은 개껌 하나 사드시라고 0.2 SBD를 보내드립니다 ^^'
+                    '정말 축하드려요!! 기분좋은 날 맛좋은 개껌 하나 사드시라고 0.2 SBD를 보내드립니다 ^^'
                     % (random.choice(rt),
                     post['parent_author'],
                     random.choice(rt),

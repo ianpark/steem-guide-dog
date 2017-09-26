@@ -43,7 +43,7 @@ class Bot:
                             self.on_complete))
         self.run_flag = True
         self.refresh_data_cache()
-        self.executor.submit(run_webapp, self.config, self.data)
+        # self.executor.submit(run_webapp, self.config, self.data)
     
     def on_data(self, post):
         """ Should not block this function """
