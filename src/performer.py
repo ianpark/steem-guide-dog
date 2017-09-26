@@ -71,12 +71,32 @@ class Performer:
                 'post': post})
 
     def generate_praise_message(self, post):
-        rt = ['멋진', '섹시한', '훈훈한', '시크한', '요염한', '흥분되는', '짱재밌는', '잊지못할', '감동적인', '놀라운', '배꼽잡는', '러블리한', '쏘쿨한']
-        msg = ('%s @%s님 안녕하세요! 저는 스팸 없는 세상을 꿈꾸는 kr 가이드독이에요. '
-               '%s @%s님 소개로 왔어요. 칭찬이 자자~ 하시더라구요. ^^ '
-                '%s글 올려주신것 너무 감사해요. '
-                '작은 선물로 0.2 SBD를 보내드립니다 ^^'
-                % (random.choice(rt),post['parent_author'], random.choice(rt), post['author'], random.choice(rt)))
+        rt = ['멋진', '섹시한', '훈훈한', '시크한', '알흠다운', '황홀한', '끝내주는', '요염한',
+        '흥분되는', '짱재밌는', '잊지못할', '감동적인', '배꼽잡는', '러블리한', '쏘쿨한']
+        if post['bot_signal'] == '@칭찬해':
+            msg = ('%s @%s님 안녕하세요! %s @%s님 소개로 왔어요. 칭찬이 아주 자자 하시더라구요!! '
+                    '%s 글 올려주신것 너무 감사해요. 작은 선물로 0.2 SBD를 보내드립니다 ^^'
+                    % (random.choice(rt),
+                    post['parent_author'],
+                    random.choice(rt),
+                    post['author'],
+                    random.choice(rt)))
+        elif post['bot_signal'] == '@축하해':
+            msg = ('%s @%s님 안녕하세요! %s @%s님이 그러는데 정말 %s 일이 있으시다고 하더라구요!! '
+                    '기분좋은 날 맛좋은 개껌 하나 사드시라고 0.2 SBD를 보내드립니다 ^^'
+                    % (random.choice(rt),
+                    post['parent_author'],
+                    random.choice(rt),
+                    post['author'],
+                    random.choice(rt)))
+        elif post['bot_signal'] == '@감사해':
+            msg = ('%s @%s님 안녕하세요! %s @%s님이 너무너무 고마워 하셔서 저도 같이 감사드리려고 이렇게 왔어요!! '
+                    '%s 하루 보내시라고 0.2 SBD를 보내드립니다 ^^'
+                    % (random.choice(rt),
+                    post['parent_author'],
+                    random.choice(rt),
+                    post['author'],
+                    random.choice(rt)))
         msg = ('<table><tr><td>%s</td><td>%s</td></tr></table>'
                 % (random.choice(self.poster['praise_photo']), msg))
         return msg

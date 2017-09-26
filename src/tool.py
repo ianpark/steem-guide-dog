@@ -30,7 +30,8 @@ def get_post():
         'parent_post_id': '@asbear/2tkz1b',
         'reported_count': 'reported_count',
         'root_title': 'root_title',
-        'body': 'body'
+        'body': 'body',
+        'bot_signal': '@감사해'
     }
     return post
 
@@ -42,5 +43,41 @@ def leave_praise(post=None):
     if not post:
         post = get_post()
 
-print(db.get_point('asbear'))
-print(db.get_usable_point('asbear'))
+
+msg = get().generate_praise_message({
+        'author': 'krguidedog',
+        'identifier':'identifier',
+        'bot_signal':'signal',
+        'parent_author':'asbear',
+        'parent_post_id': '@asbear/2tkz1b',
+        'reported_count': 'reported_count',
+        'root_title': 'root_title',
+        'body': 'body',
+        'bot_signal': '@칭찬해'
+    })
+print (msg)
+msg = get().generate_praise_message({
+        'author': 'krguidedog',
+        'identifier':'identifier',
+        'bot_signal':'signal',
+        'parent_author':'asbear',
+        'parent_post_id': '@asbear/2tkz1b',
+        'reported_count': 'reported_count',
+        'root_title': 'root_title',
+        'body': 'body',
+        'bot_signal': '@축하해'
+    })
+print (msg)
+
+msg = get().generate_praise_message({
+        'author': 'krguidedog',
+        'identifier':'identifier',
+        'bot_signal':'signal',
+        'parent_author':'asbear',
+        'parent_post_id': '@asbear/2tkz1b',
+        'reported_count': 'reported_count',
+        'root_title': 'root_title',
+        'body': 'body',
+        'bot_signal': '@감사해'
+    })
+print (msg)
