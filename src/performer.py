@@ -57,9 +57,12 @@ class Performer:
             )
             time.sleep(2)
             try:
+                power = 100
+                if self.steem.get_account('krguidedog')['voting_power'] < 5000:
+                    power = 50
                 my_comment = my_comment['operations'][0][1]
                 post_id = '@%s/%s' % (my_comment['author'], my_comment['permlink'])
-                self.steem.commit.vote(post_id, 50, self.poster['account'])
+                self.steem.commit.vote(post_id, power, self.poster['account'])
             except:
                 self.log.info('Failed to upvote!')
         except Exception as e:
