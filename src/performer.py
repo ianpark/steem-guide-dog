@@ -114,7 +114,7 @@ class Performer:
                     asset='SBD',
                     account=self.poster['account'],
                     memo=memo)
-                    self.log.info('Transferred %s to %s: %s' % (amount, send_to, memo))
+                self.log.info('Transferred %s to %s: %s' % (amount, send_to, memo))
                 break
             except:
                 retry -= 1
