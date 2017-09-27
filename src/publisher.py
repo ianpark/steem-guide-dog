@@ -86,6 +86,21 @@ class Publisher:
             spammer_table.append('<a href="http://steemit.com/@{name}">{name}</a> | {cnt}'
                         .format(name=item['name'], cnt=item['count'])
             )
+        
+        # collect all user 
+        users = self.db.get_all_user()
+        all_user = ['아이디 | 신고수 | 남은 포인트',
+                    '--- | --- | ---']
+        for user in users:
+            if user['report_count'] == 0:
+                continue
+            all_user.append(
+                '%s | %s | %s' % (
+                    user['user_id'],
+                    user['report_count'],
+                    user['point_earned'] - user['point_used']
+                )
+            )
 
         title = '🐶 가이드독 스팸신고 활동 보고드립니다. (%s)' % period
         cont = ['<center>https://steemitimages.com/0x0/https://i.imgur.com/vZYwuYc.jpg</center>',
@@ -147,6 +162,10 @@ class Publisher:
                 ' 확인해 주세요.',
                 '',
                 '---',
+                '### 현재 사용 가능 포인트',
+                '\n'.join(all_user),
+                '---',
+                '',
                 '오늘도 kr 커뮤니티를 위해 노력해주신 분들께 깊은 감사를 드립니다.',
                 '이 글에 **보팅**해 주시면 가이드독의 활동에 **큰힘**이 됩니다!',          
         ]
