@@ -104,6 +104,22 @@ class Performer:
                 % (random.choice(self.poster['praise_photo']), msg))
         return msg
 
+    def transfer(self, send_to, amount, memo):
+        retry = 2
+        while retry:
+            try:
+                self.steem.commit.transfer(
+                    to=send_to,
+                    amount=amount,
+                    asset='SBD',
+                    account=self.poster['account'],
+                    memo=memo)
+                    self.log.info('Transferred %s to %s: %s' % (amount, send_to, memo))
+                break
+            except:
+                retry -= 1
+                self.log.info('Failed to transfer %s to %s: %s' % (amount, send_to, memo))
+
     def leave_praise(self, post):
         self.log.info("ID: %s, %s (%s)" % (post['identifier'], post, post['bot_signal']))
         result = True
@@ -121,7 +137,10 @@ class Performer:
                 beneficiaries=None,
                 self_vote=False
             )
-            time.sleep(2)
+            self.transfer(
+                post['parent_author'], 0.2,
+                '@%s 님께서 가이드독 활동을 통해 모은 포인트로 감사의 표시를 하였습니다.'
+                '해당 글을 확인해 주세요! https://steemit.com/%s' % (post['author'], post['parent_post_id']))
             # upvote for promotion
             try:
                 my_comment = my_comment['operations'][0][1]
@@ -130,16 +149,6 @@ class Performer:
             except:
                 self.log.info('Failed to upvote!')
             time.sleep(2)
-            try:
-                memo = '@%s 님께서 가이드독 활동을 통해 모은 포인트로 감사의 표시를 하였습니다. 해당 글을 확인해 주세요! https://steemit.com/%s' % (post['author'], post['parent_post_id'])
-                self.steem.commit.transfer(
-                    to=post['parent_author'],
-                    amount=0.2,
-                    asset='SBD',
-                    account=self.poster['account'],
-                    memo=memo)
-            except:
-                self.log.info('Failed to transfer 0.2 to %s!' % post['parent_author'])
 
         except Exception as e:
             self.log.info(e)
