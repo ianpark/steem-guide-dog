@@ -5,6 +5,8 @@ from tinydb.operations import increment
 from datetime import datetime
 from pytz import timezone
 
+from threading import Thread, Lock
+
 KR = timezone('Asia/Seoul')
 
 """
@@ -22,17 +24,60 @@ class DataStore:
     TODO: Reimplement usign proper DB
     """
     db = TinyDB('db/db.json')
-    db_point = TinyDB('db/point.json')
     db_user = TinyDB('db/user.json')
+    db_point = TinyDB('db/point.json')
+    db_post = TinyDB('db/post_queue.json')
+    db_vote = TinyDB('db/vote_queue.json')
+    db_transfer = TinyDB('db/transfer_queue.json')
+    
+    mutex_post = Lock()
+    mutex_vote = Lock()
+    mutex_transfer = Lock()
+
     log = logging.getLogger(__name__)
-    def __init__(self, config):
-        self.config = config
+    def __init__(self):
         pass
 
     def __del__(self):
         self.db.close()
         self.db_point.close()
-    
+
+    # POST queue
+    def queue_push(self, type, data):
+        eval('self.mutex_' + type).acquire()
+        try:
+            eval('self.db_' + type).insert({
+                'data': data,
+                'time': datetime.now(),
+                'state': 'pending'
+            })
+        finally:
+            eval('self.mutex_' + type).release()
+
+    def queue_get(self, type):
+        eval('self.mutex_' + type).acquire()
+        try:
+            result = eval('self.db_' + type).get(where('state') == 'pending')
+            if result:
+                result['eid'] = result.eid
+            # None or entry
+            return result
+        finally:
+            eval('self.mutex_' + type).release()
+
+    def queue_finish(self, type, data):
+        eval('self.mutex_' + type).acquire()
+        try:
+            qry = Query()
+            eval('self.db_' + type).update({'state': 'finished'}, eids=[data['eid']])
+        finally:
+            eval('self.mutex_' + type).release()
+    # VOTE queue
+
+    # 
+
+
+
     def store_report(self, post):
         tbl = self.db.table('reports')
         qry = Query()

@@ -12,6 +12,7 @@ from time import sleep
 from data import Data
 from feed import Feed
 from performer import Performer
+from guidedog import GuideDog
 from datetime import datetime
 from db import DataStore
 from collections import deque
@@ -27,10 +28,11 @@ class Bot:
         with open(CONFIG_FILE_PATH) as config:    
             self.config = json.load(config)
         self.loop = asyncio.get_event_loop()
-        self.feed = Feed(self.config, self.on_data)
         self.queue = deque()
         self.posters = deque()
-        self.db = DataStore(self.config)
+        self.db = DataStore()
+        self.feed = Feed(self.config, self.db)
+        self.guidedog = GuideDog(self.config, self.db)
         self.data = Data()
         keypath = os.path.expanduser(self.config['keyfile_path'])
         with open(keypath) as keyfile:    
@@ -44,11 +46,6 @@ class Bot:
         self.run_flag = True
         self.refresh_data_cache()
         # self.executor.submit(run_webapp, self.config, self.data)
-    
-    def on_data(self, post):
-        """ Should not block this function """
-        self.log.info('Append data: %s' % post )
-        self.queue.append(post)
     
     def refresh_data_cache(self):
         # Update the data storage
@@ -69,24 +66,6 @@ class Bot:
                 self.db.use_point(author, used_point)
             # Refresh data cache
             self.refresh_data_cache()
-
-    def is_valid(self, post):
-        if post['signal_type'] == 'praise':
-            # Block self praise
-            if post['author'] == post['parent_author']:
-                self.log.info('Author and parent author is the same')
-                return False
-        elif post['signal_type'] == 'spam':
-            if post['author'] == post['parent_author']:
-                self.log.info('Author and parent author is the same')
-                return False
-            if post['author'] in self.config['blacklist']:
-                self.log.info('Black list match: ignore the report from %s' % post['author'])
-                return False
-            if post['parent_author'] in self.config['whitelist']:
-                self.log.info('White list match: ignore the report for %s' % post['parent_author'])
-                return False
-        return True
 
     def save_to_db(self, post):
         if post['signal_type']  == 'spam':
@@ -118,14 +97,14 @@ class Bot:
         while self.run_flag:
             # Poll the queue every second
             await asyncio.sleep(1)
+            self.guidedog.work()
+            """
             while len(self.queue):
                 if self.posters:
                     post = self.queue.popleft()
                     try:
                         self.log.info('%s reported %s' % (post['author'], post['parent_author']))
-                        if not self.is_valid(post):
-                            self.log.info('not valid')
-                            break
+
                         if not self.save_to_db(post):
                             self.log.info('failed to save')
                             break
@@ -137,6 +116,7 @@ class Bot:
                 else:
                     self.log.info("No idle poster. Queue length=%s" % len(self.queue))
                     break
+            """
         self.feed.stop()
 
     def run(self):
