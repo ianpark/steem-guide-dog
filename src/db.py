@@ -72,11 +72,14 @@ class DataStore:
             eval('self.db_' + type).update({'state': 'finished'}, eids=[data['eid']])
         finally:
             eval('self.mutex_' + type).release()
-    # VOTE queue
 
-    # 
-
-
+    def is_reported(self, post):
+        tbl = self.db.table('reports')
+        qry = Query()
+        result = tbl.contains(
+                    (qry.author == post['author']) &
+                    (qry.permlink == post['permlink']))
+        return result
 
     def store_report(self, post):
         tbl = self.db.table('reports')

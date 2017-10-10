@@ -8,26 +8,7 @@ from time import sleep
 from concurrent.futures import ThreadPoolExecutor
 from steem.blockchain import Blockchain
 from steem.post import Post
-
-class BlockPointer:
-    log = logging.getLogger(__name__)
-    LAST_BLOCK_NUM_FILE = "etc/last_block_num"
-    def __init__(self):
-        self.last_block = None
-        try:
-            with open("etc/last_block_num", "r") as f:
-                self.last_block = (int(f.read()))
-                print('Start from block number %d' % self.last_block)
-        except:
-            self.log.info('First start!')
-
-    def last(self):
-        return self.last_block
-    def update(self, block_num):
-        if not self.last_block or self.last_block < block_num:
-            self.last_block = block_num
-            with open("etc/last_block_num", "w") as f:
-                f.write(str(block_num))
+from block_pointer import BlockPointer
 
 class PostStream:
     log = logging.getLogger(__name__)
@@ -158,4 +139,4 @@ class Feed:
                 self.log.info('Ignore not valid request')
                 return
             # sink down
-            self.db.save_post(plain_post)
+            self.db.queue_push('post', plain_post)

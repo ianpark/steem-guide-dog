@@ -67,56 +67,13 @@ class Bot:
             # Refresh data cache
             self.refresh_data_cache()
 
-    def save_to_db(self, post):
-        if post['signal_type']  == 'spam':
-            result = self.db.store_report(post)
-        elif post['signal_type'] == 'praise':
-            result = self.db.store_praise(post)
-        return result
-
-    def process_post(self, post):
-        if post['signal_type'] == 'spam':
-            post['reported_count'] = self.db.get_reported_count(post['parent_author'])
-            self.posters.popleft().process_warning(post)
-        elif post['signal_type'] == 'praise':
-            point = self.db.get_usable_point(post['author'])
-            self.log.info('Praise request - user: %s point: %s' % (post['author'], point ))
-            if point >= 1:
-                post['consume_point'] = 1
-                self.posters.popleft().leave_praise(post)
-            else:
-                self.log.info('Not enough point! %s %s' % (post['author'], point))
-                # For now, let's just ignore
-                # self.posters.popleft().send_no_point_alarm(post)
-        else:
-            pass
-
     async def work(self):
         self.log.info('Start Bot')
         loop = asyncio.get_event_loop()
         while self.run_flag:
             # Poll the queue every second
-            await asyncio.sleep(1)
+            await asyncio.sleep(2)
             self.guidedog.work()
-            """
-            while len(self.queue):
-                if self.posters:
-                    post = self.queue.popleft()
-                    try:
-                        self.log.info('%s reported %s' % (post['author'], post['parent_author']))
-
-                        if not self.save_to_db(post):
-                            self.log.info('failed to save')
-                            break
-                        # Dispatch the past to the idle poster
-                        self.process_post(post)
-                    except Exception as e:
-                        self.log.info('Error! %s' % e)
-                        pass
-                else:
-                    self.log.info("No idle poster. Queue length=%s" % len(self.queue))
-                    break
-            """
         self.feed.stop()
 
     def run(self):

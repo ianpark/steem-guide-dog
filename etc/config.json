@@ -15,11 +15,11 @@
                 "http://i.imgur.com/l2z8MHm.jpg"
             ],
             "praise_photo": [
-                "http://i.imgur.com/U6KILpr.png",
-                "http://i.imgur.com/oACf3Af.png",
-                "http://i.imgur.com/Ft0qXcQ.png",
-                "http://i.imgur.com/pIqqVbm.png",
-                "http://i.imgur.com/7KVQf6i.jpg"
+                ["개사원", "http://i.imgur.com/U6KILpr.png" ],
+                ["개부장", "http://i.imgur.com/oACf3Af.png" ],
+                ["개과장", "http://i.imgur.com/Ft0qXcQ.png" ],
+                ["개수습", "http://i.imgur.com/pIqqVbm.png" ],
+                ["개대리", "http://i.imgur.com/7KVQf6i.jpg"]
             ],
             "message_file": "etc/greeting.txt"
         }
