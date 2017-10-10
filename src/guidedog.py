@@ -103,7 +103,7 @@ class GuideDog:
 
         if post['signal_type'] == 'spam':
             post['reported_count'] = self.db.get_reported_count(post['parent_author'])
-            self.process_warning(post)
+            self.process_spam(post)
         elif post['signal_type'] == 'praise':
             point = self.db.get_usable_point(post['author'])
             self.log.info('Praise request - user: %s point: %s' % (post['author'], point ))
@@ -126,7 +126,7 @@ class GuideDog:
         lines.extend(self.message)
         return '\n'.join(lines)
 
-    def process_warning(self, post):
+    def process_spam(self, post):
         my_comment = self.create_post(post['parent_post_id'], self.generate_warning_message(post))
         self.db.store_report(post)
         # Push voting to the queue
@@ -140,7 +140,7 @@ class GuideDog:
     def generate_praise_message(self, post):
         rt = ['멋진', '섹시한', '훈훈한', '시크한', '알흠다운', '황홀한', '끝내주는', '요염한',
         '흥분되는', '짱재밌는', '잊지못할', '감동적인', '배꼽잡는', '러블리한', '쏘쿨한']
-        pet = andom.choice(self.config['guidedog']['praise_photo'])
+        pet = random.choice(self.config['guidedog']['praise_photo'])
         if post['bot_signal'] == '@칭찬해':
             msg = ('%s @%s님 안녕하세요! %s 입니다. %s @%s님 소개로 왔어요. 칭찬이 아주 자자 하시더라구요!! '
                     '%s 글 올려주신것 너무 감사해요. 작은 선물로 0.2 SBD를 보내드립니다 ^^'
