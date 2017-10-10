@@ -94,17 +94,18 @@ class GuideDog:
                 self.log.error(e)
 
     def handle_post(self, post):
-        self.log.info("ID: %s (%s)" % (post, post['bot_signal']))
-        self.log.info ("%s/%s > %s" %(post['parent_author'], post['author'], post['body']))
-        
-        if self.db.is_reported(post):
-            self.log.info('Skip duplicated report: %s', post)
-            return
-
+        self.log.info("New Command [%s -> %s -> %s] : %s" % (post['author'], post['bot_signal'], post['parent_author'], post))
         if post['signal_type'] == 'spam':
+            if self.db.is_reported(post):
+                self.log.info('Skip request: already reported')
+                return
             post['reported_count'] = self.db.get_reported_count(post['parent_author'])
             self.process_spam(post)
         elif post['signal_type'] == 'praise':
+            if self.db.is_already_consumed_comment(post):
+                self.log.info('Skip request: already consumed comment')
+                return
+        
             point = self.db.get_usable_point(post['author'])
             self.log.info('Praise request - user: %s point: %s' % (post['author'], point ))
             if point >= 1:

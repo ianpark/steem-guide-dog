@@ -73,6 +73,14 @@ class DataStore:
         finally:
             eval('self.mutex_' + type).release()
 
+    def is_already_consumed_comment(self, post):
+        tbl = self.db.table('praises')
+        qry = Query()
+        result = tbl.contains(
+                    (qry.author == post['author']) &
+                    (qry.comment_permlink == post['permlink']))
+        return result
+
     def is_reported(self, post):
         tbl = self.db.table('reports')
         qry = Query()
@@ -95,6 +103,7 @@ class DataStore:
             'reporter': post['author'],
             'author': post['parent_author'],
             'permlink': post['parent_permlink'],
+            'comment_permlink': post['permlink'],
             'report_time': datetime.now(),
             'bot_signal': post['bot_signal']
         })
@@ -109,6 +118,7 @@ class DataStore:
             'reporter': post['author'],
             'author': post['parent_author'],
             'permlink': post['parent_permlink'],
+            'comment_permlink': post['permlink'],
             'report_time': datetime.now(),
             'bot_signal': post['bot_signal'],
             'processed': False
