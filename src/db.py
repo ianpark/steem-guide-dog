@@ -77,7 +77,7 @@ class DataStore:
         tbl = self.db.table('praises')
         qry = Query()
         result = tbl.contains(
-                    (qry.author == post['author']) &
+                    (qry.reporter == post['author']) &
                     (qry.comment_permlink == post['permlink']))
         return result
 
