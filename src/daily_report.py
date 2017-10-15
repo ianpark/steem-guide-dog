@@ -17,7 +17,7 @@ def print_report(date):
     if report:
         print(report['body'])
     else:
-        print('No data')
+        print('\n'.join(pb.get_all_points()))
 
 if __name__ == '__main__':
     if len(sys.argv) < 2:

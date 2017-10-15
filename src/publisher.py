@@ -7,7 +7,7 @@ from db import DataStore
 
 class Publisher:
     def __init__(self, config):
-        self.db = DataStore(config)
+        self.db = DataStore()
         self.config = config
         pass
     
@@ -27,6 +27,24 @@ class Publisher:
                          'count': counter[key],
                          'stake': round(float(counter[key])/len(records), 3)})
         return sorted(stat, key=itemgetter('count'), reverse=True)
+
+
+    def get_all_points(self):
+        # collect all user 
+        users = self.db.get_all_user()
+        all_user = ['아이디 | 신고수 | 남은 포인트',
+                    '--- | --- | ---']
+        for user in users:
+            if user['report_count'] == 0:
+                continue
+            all_user.append(
+                '@%s | %s | %s' % (
+                    user['user_id'],
+                    user['report_count'],
+                    user['point_earned'] - user['point_used']
+                )
+            )
+        return all_user
 
     def generate_report(self, start_date, end_date=None, point_base=True):
         if not end_date:
@@ -86,24 +104,9 @@ class Publisher:
             spammer_table.append('<a href="http://steemit.com/@{name}">{name}</a> | {cnt}'
                         .format(name=item['name'], cnt=item['count'])
             )
-        
-        # collect all user 
-        users = self.db.get_all_user()
-        all_user = ['아이디 | 신고수 | 남은 포인트',
-                    '--- | --- | ---']
-        for user in users:
-            if user['report_count'] == 0:
-                continue
-            all_user.append(
-                '%s | %s | %s' % (
-                    user['user_id'],
-                    user['report_count'],
-                    user['point_earned'] - user['point_used']
-                )
-            )
-
+       
         title = '🐶 가이드독 스팸신고 활동 보고드립니다. (%s)' % period
-        cont = ['<center>https://steemitimages.com/0x0/https://i.imgur.com/vZYwuYc.jpg</center>',
+        cont = ['<center>https://steemitimages.com/DQmQJySGPCWWhtS9Gw2aoR9pa3n43XCN5yvmKMwVWBk8Eym/Screen%20Shot%202017-10-11%20at%2023.25.25.png</center>',
                 '안녕하세요? @asbear입니다. %s의 KR가이드독 활동 내역을 보고드립니다.' % md,
                 '',
                 '%s에는 %s분께서 %s개의 스팸 글을 신고해 주셨습니다. %s명의 스패머들에게는 kr가이드독이 '
@@ -163,7 +166,7 @@ class Publisher:
                 '',
                 '---',
                 '### 현재 사용 가능 포인트',
-                '\n'.join(all_user),
+                '\n'.join(self.get_all_points()),
                 '---',
                 '',
                 '오늘도 kr 커뮤니티를 위해 노력해주신 분들께 깊은 감사를 드립니다.',

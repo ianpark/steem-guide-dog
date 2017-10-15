@@ -19,6 +19,7 @@ class GuideDog:
         with open(self.config['guidedog']['message_file']) as f:
             message = f.readlines()
             self.message = [x.strip() for x in message]
+        self.praise_count = 0
 
     def create_post(self, post_id, body):
         return self.steem.commit.post(
@@ -141,7 +142,9 @@ class GuideDog:
     def generate_praise_message(self, post):
         rt = ['멋진', '섹시한', '훈훈한', '시크한', '알흠다운', '황홀한', '끝내주는', '요염한',
         '흥분되는', '짱재밌는', '잊지못할', '감동적인', '배꼽잡는', '러블리한', '쏘쿨한']
-        pet = random.choice(self.config['guidedog']['praise_photo'])
+        self.praise_count += 1
+        rr = self.praise_count % len(self.config['guidedog']['praise_photo'])
+        pet = self.config['guidedog']['praise_photo'][rr]
         if post['bot_signal'] == '@칭찬해':
             msg = ('%s @%s님 안녕하세요! %s 입니다. %s @%s님 소개로 왔어요. 칭찬이 아주 자자 하시더라구요!! '
                     '%s 글 올려주신것 너무 감사해요. 작은 선물로 0.2 SBD를 보내드립니다 ^^'
