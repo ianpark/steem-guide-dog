@@ -8,7 +8,7 @@ class BlockPointer:
         try:
             with open("etc/last_block_num", "r") as f:
                 self.last_block = (int(f.read()))
-                print('Start from block number %d' % self.last_block)
+                self.log.info('Start from block number %d' % self.last_block)
         except:
             self.log.info('First start!')
 

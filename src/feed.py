@@ -9,12 +9,22 @@ from concurrent.futures import ThreadPoolExecutor
 from steem.blockchain import Blockchain
 from steem.post import Post
 from block_pointer import BlockPointer
+from steem.steemd import Steemd
 
 class PostStream:
     log = logging.getLogger(__name__)
-    blockchain = Blockchain()
+    last_shown_no = 0
+    blockchain_error = 0
     def __init__(self, block_pointer):
         self.bp = block_pointer
+        self.start_stream()
+
+    def start_stream(self):
+        self.log.info('Start new block chain and stream %s' % self.bp.last())
+        #steemd = Steemd(['https://steemd-int.steemit.com', 'https://steemd.steemit.com'])
+        steemd = Steemd(['https://steemd.privex.io'])
+        self.blockchain_error = 0
+        self.blockchain = Blockchain(steemd)
         if self.bp.last():
             self.stream = self.blockchain.stream_from(self.bp.last())
         else:
@@ -29,9 +39,15 @@ class PostStream:
                     post = block['op'][1]
                     post['block_num'] = block['block']
                     post['timestamp'] = block['timestamp']
+                    if block['block'] > (self.last_shown_no + 100):
+                        self.last_shown_no = block['block']
+                        self.log.info('Processing block: %s' % self.last_shown_no)
                     return post
         except Exception as e:
             self.log.error('Failed receiving from the stream')
+            self.blockchain_error += 1
+            if self.blockchain_error > 3:
+                self.start_stream()
             raise
 
 class Feed:
@@ -73,6 +89,7 @@ class Feed:
             except Exception as e:
                 self.log.error("Failed collecting and processing the post")
                 self.log.error(e)
+                sleep(1)
         self.log.info ('End Feed')
 
     def check_signal(self, plain_post):

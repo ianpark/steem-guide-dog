@@ -60,7 +60,6 @@ class GuideDog:
 
 
     def work(self):
-        self.log.info('Guide dog is working hard :-)')
         data = self.db.queue_get('post')
         if data:
             try:
