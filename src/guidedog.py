@@ -6,6 +6,8 @@ import json
 from datetime import datetime, timedelta
 from steem import Steem
 from steem.post import Post
+from time import sleep
+
 
 class GuideDog:
     log = logging.getLogger(__name__)
@@ -22,7 +24,7 @@ class GuideDog:
         self.praise_count = 0
 
     def create_post(self, post_id, body):
-        return self.steem.commit.post(
+        comment = self.steem.commit.post(
                 title='guide puppy',
                 body=body,
                 author=self.config['guidedog']['account'],
@@ -35,6 +37,19 @@ class GuideDog:
                 beneficiaries=None,
                 self_vote=False
             )
+        post_id = '@%s/%s' % (comment['author'], comment['permlink'])
+
+        limit = 3
+        while True:
+            sleep(1)
+            try:
+                double_check = Post(post_id)
+                return comment
+            except Exception as e:
+                limit -= 1
+                if limit == 0:
+                    raise 'Posting check failure'
+        
 
     def vote(self, post_id, power, voter):
         try:
@@ -174,6 +189,15 @@ class GuideDog:
                     random.choice(rt),
                     post['author'],
                     random.choice(rt)))
+        elif post['bot_signal'] == '@위로해':
+            msg = ('@%s님 안녕하세요. %s 입니다. @%s께 이야기 다 들었습니다. ' +
+                   random.choice(['세상사 다 그런것 아닐까요?. ', '인생지사 새옹지마라고 하잖아요. ']) +
+                   '힘든일이 있으면 반드시 좋은일도 있대요! 기운 내시라고 0.2 SBD를 보내드립니다.'
+                    % (
+                    post['parent_author'],
+                    pet[0], 
+                    post['author'],
+                    ))
         msg = ('<table><tr><td>%s</td><td>%s</td></tr></table>'
                 % (pet[1], msg))
         return msg
