@@ -1,6 +1,6 @@
 import json
 import os
-from performer import Performer
+from guidedog import GuideDog
 from db import DataStore
 
 def on_complete(result):
@@ -10,16 +10,8 @@ CONFIG_FILE_PATH = 'etc/config.json'
 
 with open(CONFIG_FILE_PATH) as config:   
     config = json.load(config)
-db = DataStore(config)
-keypath = os.path.expanduser(config['keyfile_path'])
-pp = None
-with open(keypath) as keyfile:    
-    keyfile_json = json.load(keyfile)
-    poster = config['posters'][0]
-    pp = Performer(config,
-                    poster,
-                    keyfile_json[poster['account']],
-                    on_complete)
+db = DataStore()
+pp = GuideDog(config,db)
 
 def get_post():
     post = {
@@ -79,5 +71,18 @@ msg = get().generate_praise_message({
         'root_title': 'root_title',
         'body': 'body',
         'bot_signal': '@감사해'
+    })
+print (msg)
+
+msg = get().generate_praise_message({
+        'author': 'krguidedog',
+        'identifier':'identifier',
+        'bot_signal':'signal',
+        'parent_author':'asbear',
+        'parent_post_id': '@asbear/2tkz1b',
+        'reported_count': 'reported_count',
+        'root_title': 'root_title',
+        'body': 'body',
+        'bot_signal': '@위로해'
     })
 print (msg)

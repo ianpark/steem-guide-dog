@@ -8,6 +8,7 @@ from steem import Steem
 from steem.post import Post
 from time import sleep
 
+sys_random = random.SystemRandom()
 
 class GuideDog:
     log = logging.getLogger(__name__)
@@ -21,7 +22,6 @@ class GuideDog:
         with open(self.config['guidedog']['message_file']) as f:
             message = f.readlines()
             self.message = [x.strip() for x in message]
-        self.praise_count = 0
 
     def create_post(self, post_id, body):
         comment = self.steem.commit.post(
@@ -136,7 +136,7 @@ class GuideDog:
     def generate_warning_message(self,post):
         greet = ('Nice to meet you!' if post['reported_count'] <= 1
                 else 'We have met %s times already!' % post['reported_count'])
-        lines = [random.choice(self.config['guidedog']['photo']),
+        lines = [sys_random.choice(self.config['guidedog']['photo']),
                 '## Woff, woff!',
                 '#### Hello @%s, %s' % (post['parent_author'], greet)
                 ]
@@ -156,51 +156,51 @@ class GuideDog:
 
     def generate_praise_message(self, post):
         rt = ['멋진', '섹시한', '훈훈한', '시크한', '알흠다운', '황홀한', '끝내주는', '요염한',
-        '흥분되는', '짱재밌는', '잊지못할', '감동적인', '배꼽잡는', '러블리한', '쏘쿨한']
-        self.praise_count += 1
-        rr = self.praise_count % len(self.config['guidedog']['praise_photo'])
-        pet = self.config['guidedog']['praise_photo'][rr]
+        '흥분되는', '짱재밌는', '잊지못할', '감동적인', '배꼽잡는', '러블리한', '쏘쿨한', '분위기있는']
+        pet = sys_random.choice(self.config['guidedog']['pets'])
+        pet_name = '<a href="/%s">%s</a>' % (pet['parent'], pet['name'])
+        pet_photo = sys_random.choice(pet['photo'])
         if post['bot_signal'] == '@칭찬해':
             msg = ('%s @%s님 안녕하세요! %s 입니다. %s @%s님 소개로 왔어요. 칭찬이 아주 자자 하시더라구요!! '
                     '%s 글 올려주신것 너무 감사해요. 작은 선물로 0.2 SBD를 보내드립니다 ^^'
                     % ( 
-                    random.choice(rt),
+                    sys_random.choice(rt),
                     post['parent_author'],
-                    pet[0],
-                    random.choice(rt),
+                    pet_name,
+                    sys_random.choice(rt),
                     post['author'],
-                    random.choice(rt)))
+                    sys_random.choice(rt)))
         elif post['bot_signal'] == '@축하해':
             msg = (('%s @%s님 안녕하세요! %s 입니다. %s @%s님이 그러는데 정말 %s 일이 있으시다고 하더라구요!! '
-                    '정말 축하드려요!! 기분좋은 날 맛좋은 '+ random.choice(['개껌 하나', '개밥 한그릇', '개뼈다구 하나']) +' 사드시라고 0.2 SBD를 보내드립니다 ^^')
+                    '정말 축하드려요!! 기분좋은 날 맛좋은 '+ sys_random.choice(['개껌 하나', '개밥 한그릇', '개뼈다구 하나']) +' 사드시라고 0.2 SBD를 보내드립니다 ^^')
                     % (
-                    random.choice(rt),
+                    sys_random.choice(rt),
                     post['parent_author'],
-                    pet[0], 
-                    random.choice(rt),
+                    pet_name,
+                    sys_random.choice(rt),
                     post['author'],
-                    random.choice(rt)))
+                    sys_random.choice(rt)))
         elif post['bot_signal'] == '@감사해':
             msg = ('%s @%s님 안녕하세요! %s 입니다. %s @%s님이 너무너무 고마워 하셔서 저도 같이 감사드리려고 이렇게 왔어요!! '
                     '%s 하루 보내시라고 0.2 SBD를 보내드립니다 ^^'
                     % (
-                    random.choice(rt),
+                    sys_random.choice(rt),
                     post['parent_author'],
-                    pet[0], 
-                    random.choice(rt),
+                    pet_name,
+                    sys_random.choice(rt),
                     post['author'],
-                    random.choice(rt)))
+                    sys_random.choice(rt)))
         elif post['bot_signal'] == '@위로해':
             msg = (('@%s님 안녕하세요. %s 입니다. @%s께 이야기 다 들었습니다. ' +
-                   random.choice(['세상사 다 그런것 아닐까요?. ', '인생지사 새옹지마라고 하잖아요. ']) +
+                   sys_random.choice(['세상사 다 그런것 아닐까요?. ', '인생지사 새옹지마라고 하잖아요. ']) +
                    '힘든일이 있으면 반드시 좋은일도 있대요! 기운 내시라고 0.2 SBD를 보내드립니다.')
                     % (
                     post['parent_author'],
-                    pet[0], 
+                    pet_name,
                     post['author']
                     ))
         msg = ('<table><tr><td>%s</td><td>%s</td></tr></table>'
-                % (pet[1], msg))
+                % (pet_photo, msg))
         return msg
 
     def leave_praise(self, post):
