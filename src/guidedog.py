@@ -37,7 +37,8 @@ class GuideDog:
                 beneficiaries=None,
                 self_vote=False
             )
-        post_id = '@%s/%s' % (comment['author'], comment['permlink'])
+        post_item = comment['operations'][0][1]
+        post_id = '@%s/%s' % (post_item['author'], post_item['permlink'])
 
         limit = 3
         while True:
@@ -170,8 +171,8 @@ class GuideDog:
                     post['author'],
                     random.choice(rt)))
         elif post['bot_signal'] == '@축하해':
-            msg = ('%s @%s님 안녕하세요! %s 입니다. %s @%s님이 그러는데 정말 %s 일이 있으시다고 하더라구요!! '
-                    '정말 축하드려요!! 기분좋은 날 맛좋은 개껌 하나 사드시라고 0.2 SBD를 보내드립니다 ^^'
+            msg = (('%s @%s님 안녕하세요! %s 입니다. %s @%s님이 그러는데 정말 %s 일이 있으시다고 하더라구요!! '
+                    '정말 축하드려요!! 기분좋은 날 맛좋은 '+ random.choice(['개껌 하나', '개밥 한그릇', '개뼈다구 하나']) +' 사드시라고 0.2 SBD를 보내드립니다 ^^')
                     % (
                     random.choice(rt),
                     post['parent_author'],
@@ -190,13 +191,13 @@ class GuideDog:
                     post['author'],
                     random.choice(rt)))
         elif post['bot_signal'] == '@위로해':
-            msg = ('@%s님 안녕하세요. %s 입니다. @%s께 이야기 다 들었습니다. ' +
+            msg = (('@%s님 안녕하세요. %s 입니다. @%s께 이야기 다 들었습니다. ' +
                    random.choice(['세상사 다 그런것 아닐까요?. ', '인생지사 새옹지마라고 하잖아요. ']) +
-                   '힘든일이 있으면 반드시 좋은일도 있대요! 기운 내시라고 0.2 SBD를 보내드립니다.'
+                   '힘든일이 있으면 반드시 좋은일도 있대요! 기운 내시라고 0.2 SBD를 보내드립니다.')
                     % (
                     post['parent_author'],
                     pet[0], 
-                    post['author'],
+                    post['author']
                     ))
         msg = ('<table><tr><td>%s</td><td>%s</td></tr></table>'
                 % (pet[1], msg))

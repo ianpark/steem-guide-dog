@@ -145,6 +145,9 @@ class Publisher:
                 '### 감사해',
                 '- 글에 @감사해가 포함된 댓글을 달면, 가이드독이 와서 감사댓글과 0.2 SBD를 선물합니다.',
                 '- 1 포인트 사용됩니다.',
+                '### 위로해',
+                '- 글에 @위로해가 포함된 댓글을 달면, 가이드독이 와서 감사댓글과 0.2 SBD를 선물합니다.',
+                '- 1 포인트 사용됩니다.',
                 '',
                 '### 특별히 구성된 가이드독 드림팀입니다',
                 '<table><tr><td>http://i.imgur.com/7KVQf6i.jpg</td><td>http://i.imgur.com/pIqqVbm.png</td><td>http://i.imgur.com/Ft0qXcQ.png</td><td>http://i.imgur.com/oACf3Af.png</td><td>http://i.imgur.com/U6KILpr.png</td></tr><tr><td>개대리</td><td>개수습</td><td>개과장</td><td>개부장</td><td>개사원</td></tr></table>',
@@ -153,16 +156,12 @@ class Publisher:
                 '스팸글 신고는 귀찮고 시간도 잡아먹는 일입니다. 공익을 위한 이분들의 노력에'
                 ' 박수를 보냅니다. 감사의 표시로 작은 보상을 준비 하였습니다.',
                 '\n'.join(reporter_table),
-                '- 전체 누적 순위는 <a href="http://soboru.co.uk:5000">여기</a>에서'
-                ' 확인해 주세요.'
                 '',
                 '---',
                 '## 오늘의 스패머',
                 '아래는 스패머들의 목록입니다. 혹시 억울하게 신고당한 분이 있다면 꼭 저에게 알려주세요!',
                 '\n'.join(spammer_table),
                 '- 반복이 3회 이상인 스패머의 글은 봇이거나 악의적 스패머일 수 있습니다.',
-                '- 전체 누적 스패머 순위는 <a href="http://soboru.co.uk:5000">여기</a>에서'
-                ' 확인해 주세요.',
                 '',
                 '---',
                 '### 현재 사용 가능 포인트',
