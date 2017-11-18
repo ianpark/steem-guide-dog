@@ -7,6 +7,7 @@ from datetime import datetime, timedelta
 from steem import Steem
 from steem.post import Post
 from time import sleep
+from publisher import Publisher
 
 sys_random = random.SystemRandom()
 
@@ -22,6 +23,9 @@ class GuideDog:
         with open(self.config['guidedog']['message_file']) as f:
             message = f.readlines()
             self.message = [x.strip() for x in message]
+        self.last_daily_report = None
+        self.daily_report_generator = Publisher(self.db)
+        self.daily_report_timestamp = None
 
     def create_post(self, post_id, body):
         comment = self.steem.commit.post(
@@ -74,6 +78,53 @@ class GuideDog:
             self.log.info(e)
             raise
 
+    def daily_report(self):
+        last_daily_report = None
+        try:
+            with open("db/daily_report", "r") as f:
+                last_daily_report = f.read().splitlines()[0]
+        except:
+            self.log.info('Failed to read daily_report file!!')
+            return
+        try:
+            theday = datetime.now() - timedelta(days=1)
+            if last_daily_report == theday.strftime("%d %b %Y"):
+                # Already created until the last available day
+                return
+            newday = datetime.strptime(last_daily_report, "%d %b %Y") + timedelta(days=1)
+            result = self.daily_report_generator.generate_report(newday.strftime("%d %b %Y"))
+            if result == None:
+                self.log.info('No activiey is found in ' + newday.strftime("%d %b %Y"))
+            else:
+                self.log.info('Creating a daily report for ' + newday.strftime("%d %b %Y"))
+                comment = self.steem.commit.post(
+                    title=result['title'],
+                    body=result['body'],
+                    author='asbear',
+                    permlink=None,
+                    reply_identifier=None,
+                    json_metadata=None,
+                    comment_options=None,
+                    community=None,
+                    tags=None,
+                    beneficiaries=None,
+                    self_vote=True)
+                try:
+                    post_item = comment['operations'][0][1]
+                    post_id = '@%s/%s' % (post_item['author'], post_item['permlink'])
+                    self.vote(post_id, 100, 'krguidedog')
+                except:
+                    pass
+            )
+
+            # All succeeded. Update the last report day
+            with open("db/daily_report", "w") as f:
+                f.write(newday.strftime("%d %b %Y"))
+            
+        except Exception as e:
+            self.log.info(e)
+            self.log.info('Failed to create a daily report for ' + theday.strftime("%d %b %Y"))
+            return
 
     def work(self):
         data = self.db.queue_get('post')
@@ -108,6 +159,8 @@ class GuideDog:
                 self.log.error('Failed: transfer (will retry)')
                 self.log.error(data)
                 self.log.error(e)
+
+        self.daily_report() 
 
     def handle_post(self, post):
         self.log.info("New Command [%s -> %s -> %s] : %s" % (post['author'], post['bot_signal'], post['parent_author'], post))

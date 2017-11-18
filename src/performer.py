@@ -7,6 +7,8 @@ from steem.post import Post
 
 POSTING_GUARD_TIME = timedelta(seconds=20)
 
+
+
 class Performer:
     log = logging.getLogger(__name__)
     def __init__(self, config, poster, priv_keys, on_complete):

@@ -6,9 +6,11 @@ from db import DataStore
 
 
 class Publisher:
-    def __init__(self, config):
-        self.db = DataStore()
-        self.config = config
+    def __init__(self, db=None):
+        if db:
+            self.db = db
+        else:
+            self.db = DataStore()
         pass
     
     def get_spammer_rank(self, records):
@@ -47,7 +49,7 @@ class Publisher:
             )
         return all_user
 
-    def generate_report(self, start_date, end_date=None, point_base=True):
+    def generate_report(self, start_date, end_date=None):
         if not end_date:
             end_date = start_date
         records = self.db.get_rank_period(start_date, end_date)
@@ -57,47 +59,36 @@ class Publisher:
         end = util.get_kr_time_from_timestamp(records[-1]['report_time'])
         md = util.get_kr_time(records[0]['report_time']).strftime('%-m월 %-d일')
         period = start + (' - ' + end if start != end else '')
-        pool = self.config['reward']['pool']
-        medals = self.config['reward']['medals']
-
+        medals = [
+                "http://i.imgur.com/hv0zL8U.png",
+                "http://i.imgur.com/xe9CD0S.png",
+                "http://i.imgur.com/50zpz2p.png"
+                ]
         reporter_rank = self.get_rank(records)
-        if point_base:
-            reporter_table = ['불러주신분 | 횟수 | 획득포인트 | 누적포인트',
-                              '---  | --- | --- | ---']
-            for idx, item in enumerate(reporter_rank):
+
+        reporter_table = ['불러주신분 | 횟수 | 획득포인트 | 누적포인트',
+                            '---  | --- | --- | ---']
+        for idx, item in enumerate(reporter_rank):
+            point = 1
+            if item['count'] >= 10:
+                point = 4
+            elif item['count'] >= 6:
+                point = 3
+            elif item['count'] >= 3:
+                point = 2
+            else:
                 point = 1
-                if item['count'] >= 10:
-                    point = 4
-                elif item['count'] >= 6:
-                    point = 3
-                elif item['count'] >= 3:
-                    point = 2
-                else:
-                    point = 1
-                self.db.add_point(item['name'], point, start_date)
-                self.db.update_point(item['name'])
-                new_point = self.db.get_point(item['name'])
-                reporter_table.append('@%s %s | %s | %s | %s' % (
-                    item['name'],
-                    medals[idx] if idx < len(medals) else '',
-                    item['count'],
-                    point,
-                    new_point['earned'] - new_point['used']
-                    )
+            self.db.add_point(item['name'], point, start_date)
+            self.db.update_point(item['name'])
+            new_point = self.db.get_point(item['name'])
+            reporter_table.append('@%s %s | %s | %s | %s' % (
+                item['name'],
+                medals[idx] if idx < len(medals) else '',
+                item['count'],
+                point,
+                new_point['earned'] - new_point['used']
                 )
-                
-        else:
-            reporter_table = ['불러주신분 | 횟수 | 비율 | 보상',
-                            '---  | ---   | ---   | ---',]
-            for idx, item in enumerate(reporter_rank):
-                reporter_table.append('@%s %s | %s | %s%% | %s SBD' % (
-                    item['name'],
-                    medals[idx] if idx < len(medals) else '',
-                    item['count'],
-                    round(item['stake'] * 100, 1),
-                    round(pool * item['stake'], 2),
-                    )
-                )
+            )
 
         spammer_rank = self.get_spammer_rank(records)
         spammer_table = ['계정 | 횟수', '---  | ---']
@@ -176,5 +167,5 @@ class Publisher:
         ]
         return {'reporter': reporter_table,
                 'spammer': spammer_table,
-                'pool': pool,
+                'title': title,
                 'body': '\n'.join(cont)}

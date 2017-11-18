@@ -33,6 +33,7 @@ class DataStore:
     mutex_post = Lock()
     mutex_vote = Lock()
     mutex_transfer = Lock()
+    mutex_main = Lock()
 
     log = logging.getLogger(__name__)
     def __init__(self):
@@ -74,22 +75,27 @@ class DataStore:
             eval('self.mutex_' + type).release()
 
     def is_already_consumed_comment(self, post):
+        self.mutex_main.acquire()
         tbl = self.db.table('praises')
         qry = Query()
         result = tbl.contains(
                     (qry.reporter == post['author']) &
                     (qry.comment_permlink == post['permlink']))
+        self.mutex_main.release()
         return result
 
     def is_reported(self, post):
+        self.mutex_main.acquire()
         tbl = self.db.table('reports')
         qry = Query()
         result = tbl.contains(
                     (qry.author == post['author']) &
                     (qry.permlink == post['permlink']))
+        self.mutex_main.release()
         return result
 
     def store_report(self, post):
+        self.mutex_main.acquire()
         tbl = self.db.table('reports')
         qry = Query()
         result = tbl.contains(
@@ -97,6 +103,7 @@ class DataStore:
                     (qry.permlink == post['permlink']))
         if result:
             self.log.info('Already exists: %s' % result)
+            self.mutex_main.release()
             return False
 
         tbl.insert({
@@ -109,10 +116,11 @@ class DataStore:
         })
         self.add_user(post['author'])
         self.add_spammer(post['parent_author'])
-
+        self.mutex_main.release()
         return True
     
     def store_praise(self, post):
+        self.mutex_main.acquire()
         tbl = self.db.table('praises')
         tbl.insert({
             'reporter': post['author'],
@@ -123,6 +131,7 @@ class DataStore:
             'bot_signal': post['bot_signal'],
             'processed': False
         })
+        self.mutex_main.release()
         return True   
 
     def add_user(self, user_id):
@@ -156,12 +165,14 @@ class DataStore:
     def get_report_count(self, user_id):
         reports = self.db.table('reports')
         qry = Query()
-        return reports.count(qry.reporter == user_id)
+        report_count = reports.count(qry.reporter == user_id)
+        return report_count
 
     def get_reported_count(self, user_id):
         reports = self.db.table('reports')
         qry = Query()
-        return reports.count(qry.author == user_id)
+        reported_count = reports.count(qry.author == user_id)
+        return reported_count
     
     def get_rank_period(self, start_date, end_date):
         reports = self.db.table('reports')
@@ -181,6 +192,7 @@ class DataStore:
         Points
     """
     def update_point(self, user_id):
+        # Call in a mutex
         point = self.get_point(user_id)
         user = self.db_user.table('user')
         qry = Query()
@@ -193,6 +205,7 @@ class DataStore:
                 eids=[result.eid])
 
     def add_point(self, user_id, amount, date):
+        self.mutex_main.acquire()
         reports = self.db_point.table('earned')
         qry = Query()
         reports.remove((qry.date == date) & (qry.user_id == user_id))
@@ -203,8 +216,10 @@ class DataStore:
             'date': date
             })
         self.update_point(user_id)
+        self.mutex_main.release()
     
     def use_point(self, user_id, amount):
+        self.mutex_main.acquire()
         reports = self.db_point.table('used')
         reports.insert({
             'user_id': user_id, 
@@ -212,6 +227,7 @@ class DataStore:
             'date': datetime.now().strftime('%d %b %Y')
             })
         self.update_point(user_id)
+        self.mutex_main.release()
 
     def get_point(self, user_id):
         qry = Query()
@@ -224,5 +240,5 @@ class DataStore:
         return {'earned': earned_point, 'used': used_point}
 
     def get_usable_point(self, user_id):
-        point = self.get_point(user_id)
+        self.point = self.get_point(user_id)
         return (point['earned'] - point['used'])
