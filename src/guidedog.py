@@ -115,7 +115,6 @@ class GuideDog:
                     self.vote(post_id, 100, 'krguidedog')
                 except:
                     pass
-            )
 
             # All succeeded. Update the last report day
             with open("db/daily_report", "w") as f:
@@ -123,7 +122,7 @@ class GuideDog:
             
         except Exception as e:
             self.log.info(e)
-            self.log.info('Failed to create a daily report for ' + theday.strftime("%d %b %Y"))
+            self.log.info('Failed to create a daily report for ' + newday.strftime("%d %b %Y"))
             return
 
     def work(self):
