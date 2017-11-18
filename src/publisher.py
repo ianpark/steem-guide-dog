@@ -97,7 +97,7 @@ class Publisher:
                         .format(name=item['name'], cnt=item['count'])
             )
        
-        title = '🐶 가이드독 스팸신고 활동 보고드립니다. (%s)' % period
+        title = '🐶 %s 가이드독 스팸신고 활동 보고드립니다 (KR Guidedog\'s war on spam)' % period
         cont = ['<center>https://steemitimages.com/DQmQJySGPCWWhtS9Gw2aoR9pa3n43XCN5yvmKMwVWBk8Eym/Screen%20Shot%202017-10-11%20at%2023.25.25.png</center>',
                 '안녕하세요? @asbear입니다. %s의 KR가이드독 활동 내역을 보고드립니다.' % md,
                 '',

@@ -1,4 +1,5 @@
 import os
+import uuid
 import logging
 import random
 import time 
@@ -101,12 +102,12 @@ class GuideDog:
                     title=result['title'],
                     body=result['body'],
                     author='asbear',
-                    permlink=None,
+                    permlink=str(uuid.uuid4()),
                     reply_identifier=None,
                     json_metadata=None,
                     comment_options=None,
                     community=None,
-                    tags=None,
+                    tags='kr krguidedog antispam',
                     beneficiaries=None,
                     self_vote=True)
                 try:
