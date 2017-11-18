@@ -4,20 +4,12 @@ from db import DataStore
 from publisher import Publisher
 
 def print_report(date):
-    pb = Publisher({
-        "reward": {
-            "medals" : [
-                "http://i.imgur.com/hv0zL8U.png",
-                "http://i.imgur.com/xe9CD0S.png",
-                "http://i.imgur.com/50zpz2p.png"],
-            "pool": 10
-        }
-    })
+    pb = Publisher()
     report = pb.generate_report(date)
     if report:
         print(report['body'])
     else:
-        print('No data')
+        print('\n'.join(pb.get_all_points()))
 
 if __name__ == '__main__':
     if len(sys.argv) < 2:

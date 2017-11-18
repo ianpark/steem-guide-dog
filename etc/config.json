@@ -2,20 +2,112 @@
     "keyfile_path": "~/.steem/keys.json",
     "main_tag": "kr",
     "tag_prefix": "kr-",
-    "signals": ["kr-guide!", "전혀이해가안돼!"],
-    "posters": [
-        {
-            "account": "krguidedog",
-            "nickname": "KR Guide Dog",
-            "photo": [
-                "http://i.imgur.com/ikEQBTz.jpg",
-                "http://i.imgur.com/E0FuVhq.jpg",
-                "http://i.imgur.com/Cx4HH05.jpg",
-                "http://i.imgur.com/l2z8MHm.jpg"
-            ],
-            "message_file": "etc/greeting.txt"
-        }
-    ],
+    "report_signals": ["kr-guide!", "전혀이해가안돼!", "무슨개소리야!"],
+    "praise_signals": ["@칭찬해", "@축하해", "@감사해", "@위로해"],
+    "guidedog": {
+        "account": "krguidedog",
+        "nickname": "KR Guide Dog",
+        "photo": [
+            "http://i.imgur.com/ikEQBTz.jpg",
+            "http://i.imgur.com/E0FuVhq.jpg",
+            "http://i.imgur.com/Cx4HH05.jpg",
+            "http://i.imgur.com/l2z8MHm.jpg"
+        ],
+        "pets": [
+            {
+                "name": "개사원",
+                "parent": "@asbear",
+                "photo": ["http://i.imgur.com/U6KILpr.png"]
+            },
+            {
+                "name": "개부장",
+                "parent": "@asbear",
+                "photo": ["http://i.imgur.com/oACf3Af.png"]
+            },
+            {
+                "name": "개과장",
+                "parent": "@asbear",
+                "photo": ["http://i.imgur.com/Ft0qXcQ.png"]
+            },
+            {
+                "name": "개대리",
+                "parent": "@asbear",
+                "photo": ["http://i.imgur.com/7KVQf6i.jpg"]
+            },
+            {
+                "name": "개수습",
+                "parent": "@asbear",
+                "photo": ["http://i.imgur.com/pIqqVbm.png"]
+            },
+            {
+                "name": "겨울이",
+                "parent": "@keykey",
+                "photo": [
+                    "https://i.imgur.com/GsDhctu.jpg",
+                    "https://i.imgur.com/tJJnC3W.jpg",
+                    "https://i.imgur.com/EvX4p4B.jpg"
+                ]
+            },
+            {
+                "name": "여름이",
+                "parent": "@keykey",
+                "photo": [
+                    "https://i.imgur.com/km5WlNZ.jpg",
+                    "https://i.imgur.com/7zJDCee.jpg"
+                ]
+            },
+            {
+                "name": "깜지",
+                "parent": "@allpass",
+                "photo": [
+                    "https://i.imgur.com/cGjDwLm.jpg",
+                    "https://i.imgur.com/AH3TQ1V.jpg",
+                    "https://i.imgur.com/Jods6s5.jpg"
+                ]
+            },
+            {
+                "name": "하니",
+                "parent": "@kingbit",
+                "photo": [
+                    "https://i.imgur.com/G1VozdT.jpg",
+                    "https://i.imgur.com/OJ9RBv3.png"
+                ]
+            },
+            {
+                "name": "써니",
+                "parent": "@homechelin",
+                "photo": [
+                    "https://i.imgur.com/IhQNvMb.jpg",
+                    "https://i.imgur.com/HSAPWey.jpg"
+                ]
+            },
+            {
+                "name": "아리",
+                "parent": "@rosaria",
+                "photo": [
+                    "https://i.imgur.com/JZaU4tB.jpg",
+                    "https://i.imgur.com/b6R5XHR.jpg"
+                ]
+            },
+            {
+                "name": "킹",
+                "parent": "@starjuno",
+                "photo": [
+                    "https://i.imgur.com/hWRwPdU.png",
+                    "https://i.imgur.com/Di1kBXp.png"
+                ]
+            },
+            {
+                "name": "별이",
+                "parent": "@louispark",
+                "photo": [
+                    "https://i.imgur.com/CraAs9J.jpg",
+                    "https://i.imgur.com/zla5JVW.jpg"
+                ]
+            }
+        ],
+        "message_file": "etc/greeting.txt"
+    },
     "whitelist": [""],
     "blacklist": [""],
     "reward": {
