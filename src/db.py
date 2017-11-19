@@ -240,5 +240,5 @@ class DataStore:
         return {'earned': earned_point, 'used': used_point}
 
     def get_usable_point(self, user_id):
-        self.point = self.get_point(user_id)
+        point = self.get_point(user_id)
         return (point['earned'] - point['used'])
