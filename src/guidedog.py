@@ -215,7 +215,7 @@ class GuideDog:
         pet_photo = sys_random.choice(pet['photo'])
         if post['bot_signal'] == '@칭찬해':
             msg = ('%s @%s님 안녕하세요! %s 입니다. %s @%s님 소개로 왔어요. 칭찬이 아주 자자 하시더라구요!! '
-                    '%s 글 올려주신것 너무 감사해요. 작은 선물로 0.2 SBD를 보내드립니다 ^^'
+                    '%s 글 올려주신것 너무 감사해요. 작은 선물로 0.3 SBD를 보내드립니다 ^^'
                     % ( 
                     sys_random.choice(rt),
                     post['parent_author'],
@@ -225,7 +225,7 @@ class GuideDog:
                     sys_random.choice(rt)))
         elif post['bot_signal'] == '@축하해':
             msg = (('%s @%s님 안녕하세요! %s 입니다. %s @%s님이 그러는데 정말 %s 일이 있으시다고 하더라구요!! '
-                    '정말 축하드려요!! 기분좋은 날 맛좋은 '+ sys_random.choice(['개껌 하나', '개밥 한그릇', '개뼈다구 하나']) +' 사드시라고 0.2 SBD를 보내드립니다 ^^')
+                    '정말 축하드려요!! 기분좋은 날 맛좋은 '+ sys_random.choice(['개껌 하나', '개밥 한그릇', '개뼈다구 하나']) +' 사드시라고 0.3 SBD를 보내드립니다 ^^')
                     % (
                     sys_random.choice(rt),
                     post['parent_author'],
@@ -235,7 +235,7 @@ class GuideDog:
                     sys_random.choice(rt)))
         elif post['bot_signal'] == '@감사해':
             msg = ('%s @%s님 안녕하세요! %s 입니다. %s @%s님이 너무너무 고마워 하셔서 저도 같이 감사드리려고 이렇게 왔어요!! '
-                    '%s 하루 보내시라고 0.2 SBD를 보내드립니다 ^^'
+                    '%s 하루 보내시라고 0.3 SBD를 보내드립니다 ^^'
                     % (
                     sys_random.choice(rt),
                     post['parent_author'],
@@ -246,7 +246,7 @@ class GuideDog:
         elif post['bot_signal'] == '@위로해':
             msg = (('@%s님 안녕하세요. %s 입니다. @%s께 이야기 다 들었습니다. ' +
                    sys_random.choice(['세상사 다 그런것 아닐까요?. ', '인생지사 새옹지마라고 하잖아요. ']) +
-                   '힘든일이 있으면 반드시 좋은일도 있대요! 기운 내시라고 0.2 SBD를 보내드립니다.')
+                   '힘든일이 있으면 반드시 좋은일도 있대요! 기운 내시라고 0.3 SBD를 보내드립니다.')
                     % (
                     post['parent_author'],
                     pet_name,
@@ -265,7 +265,7 @@ class GuideDog:
         self.db.queue_push('vote', {'power': 20, 'post_id': post_id, 'voter': self.config['guidedog']['account']})
         # Push transfer to queue
         self.db.queue_push('transfer', {'send_to': post['parent_author'],
-            'amount': 0.2,
+            'amount': 0.3,
             'memo': '@%s 님께서 가이드독 활동을 통해 모은 포인트로 감사의 표시를 하였습니다.'
             '해당 글을 확인해 주세요! https://steemit.com/%s' % (post['author'], post['parent_post_id']) })
 
