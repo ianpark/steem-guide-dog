@@ -47,7 +47,7 @@ class Bot:
         loop = asyncio.get_event_loop()
         while self.run_flag:
             # Poll the queue every second
-            await asyncio.sleep(2)
+            await asyncio.sleep(3)
             self.guidedog.work()
         self.feed.stop()
 

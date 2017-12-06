@@ -55,7 +55,27 @@ class GuideDog:
                 limit -= 1
                 if limit == 0:
                     raise 'Posting check failure'
-        
+
+    def try_staking(self):
+        if self.steem.get_account('krguidedog')['voting_power'] > 9000:
+            self.steem.commit.post(
+                title='guidedog training',
+                body="guidedog antispam service",
+                author=self.config['guidedog']['account'],
+                permlink=None,
+                reply_identifier=sys_random.choice(["@krguidedog/test-kr-guidedog-please-ignore",
+                                                    "@krguidedog/test-kr-guidedog-please-ignore-2",
+                                                    "@krguidedog/kr-guiddog-test",
+                                                    "@krguidedog/test4",
+                                                    "@krguidedog/test5",
+                                                    "@krguidedog/test6"])
+                json_metadata=None,
+                comment_options=None,
+                community=None,
+                tags=None,
+                beneficiaries=None,
+                self_vote=True
+            )
 
     def vote(self, post_id, power, voter):
         try:
@@ -160,7 +180,9 @@ class GuideDog:
                 self.log.error(data)
                 self.log.error(e)
 
-        self.daily_report() 
+        self.daily_report()
+        # Prevent wasting the donated funds
+        self.try_staking()
 
     def handle_post(self, post):
         self.log.info("New Command [%s -> %s -> %s] : %s" % (post['author'], post['bot_signal'], post['parent_author'], post))
