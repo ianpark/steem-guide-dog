@@ -57,25 +57,28 @@ class GuideDog:
                     raise 'Posting check failure'
 
     def try_staking(self):
-        if self.steem.get_account('krguidedog')['voting_power'] > 9000:
-            self.steem.commit.post(
-                title='guidedog training',
-                body="guidedog antispam service",
-                author=self.config['guidedog']['account'],
-                permlink=None,
-                reply_identifier=sys_random.choice(["@krguidedog/test-kr-guidedog-please-ignore",
+        try:
+          if self.steem.get_account('krguidedog')['voting_power'] > 9000:
+              self.steem.commit.post(
+                  title='guidedog training',
+                  body="guidedog antispam service",
+                  author=self.config['guidedog']['account'],
+                  permlink=None,
+                  reply_identifier=sys_random.choice(["@krguidedog/test-kr-guidedog-please-ignore",
                                                     "@krguidedog/test-kr-guidedog-please-ignore-2",
                                                     "@krguidedog/kr-guiddog-test",
                                                     "@krguidedog/test4",
                                                     "@krguidedog/test5",
-                                                    "@krguidedog/test6"])
-                json_metadata=None,
-                comment_options=None,
-                community=None,
-                tags=None,
-                beneficiaries=None,
-                self_vote=True
-            )
+                                                    "@krguidedog/test6"]),
+                  json_metadata=None,
+                  comment_options=None,
+                  community=None,
+                  tags=None,
+                  beneficiaries=None,
+                  self_vote=True
+              )
+        except Exception as e:
+          pass
 
     def vote(self, post_id, power, voter):
         try:
