@@ -109,7 +109,7 @@
         "message_file": "etc/greeting.txt"
     },
     "whitelist": [""],
-    "blacklist": [""],
+    "blacklist": ["jordbruk"],
     "reward": {
         "medals" : [
             "http://i.imgur.com/hv0zL8U.png",

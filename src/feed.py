@@ -21,8 +21,8 @@ class PostStream:
 
     def start_stream(self):
         self.log.info('Start new block chain and stream %s' % self.bp.last())
-        steemd = Steemd(['https://steemd-int.steemit.com', 'https://steemd.steemit.com'])
-        #steemd = Steemd(['https://steemd.privex.io'])
+        #steemd = Steemd(['https://steemd.steemit.com'])
+        steemd = Steemd(['https://steemd.privex.io'])
         self.blockchain_error = 0
         self.blockchain = Blockchain(steemd)
         if self.bp.last():
@@ -105,6 +105,9 @@ class Feed:
             # Block self praise
             if post['author'] == post['parent_author']:
                 self.log.info('Author and parent author is the same')
+                return False
+            if post['author'] in self.config['blacklist']:
+                self.log.info('Black list match: ignore the report from %s' % post['author'])
                 return False
         elif post['signal_type'] == 'spam':
             if post['author'] == post['parent_author']:
