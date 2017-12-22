@@ -2,7 +2,7 @@
     "keyfile_path": "~/.steem/keys.json",
     "main_tag": "kr",
     "tag_prefix": "kr-",
-    "report_signals": ["kr-guide!", "전혀이해가안돼!", "무슨개소리야!"],
+    "report_signals": [],
     "praise_signals": ["@칭찬해", "@축하해", "@감사해", "@위로해"],
     "guidedog": {
         "account": "krguidedog",
@@ -109,7 +109,7 @@
         "message_file": "etc/greeting.txt"
     },
     "whitelist": [""],
-    "blacklist": ["jordbruk"],
+    "blacklist": ["jordbruk", "newbieji1", "rashley01"],
     "reward": {
         "medals" : [
             "http://i.imgur.com/hv0zL8U.png",
