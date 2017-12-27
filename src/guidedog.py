@@ -83,7 +83,7 @@ class GuideDog:
     def vote(self, post_id, power, voter):
         try:
             self.steem.commit.vote(post_id, power, voter)
-            self.log.info('Voted %s on %s' % (power, post_id))
+            self.log.info('%s voted on %s with %s percentage' % (voter, post_id, power))
         except Exception as e:
             self.log.info(e)
             raise
@@ -94,7 +94,7 @@ class GuideDog:
             self.steem.commit.transfer(
                 to=send_to,
                 amount=amount,
-                asset='SBD',
+                asset='STEEM',
                 account=self.config['guidedog']['account'],
                 memo=memo)
             self.log.info('Transferred %s to %s: %s' % (amount, send_to, memo))
@@ -133,12 +133,6 @@ class GuideDog:
                     tags='kr krguidedog antispam',
                     beneficiaries=None,
                     self_vote=True)
-                try:
-                    post_item = comment['operations'][0][1]
-                    post_id = '@%s/%s' % (post_item['author'], post_item['permlink'])
-                    self.vote(post_id, 100, 'krguidedog')
-                except:
-                    pass
 
             # All succeeded. Update the last report day
             with open("db/daily_report", "w") as f:
@@ -185,7 +179,7 @@ class GuideDog:
 
         self.daily_report()
         # Prevent wasting the donated funds
-        self.try_staking()
+        # self.try_staking()
 
     def handle_post(self, post):
         self.log.info("New Command [%s -> %s -> %s] : %s" % (post['author'], post['bot_signal'], post['parent_author'], post))
@@ -225,14 +219,15 @@ class GuideDog:
         my_comment = self.create_post(post['parent_post_id'], self.generate_warning_message(post))
         self.db.store_report(post)
         # Push voting to the queue
-        power = 100
-        if self.steem.get_account('krguidedog')['voting_power'] < 5000:
-            power = 50
         my_comment = my_comment['operations'][0][1]
         post_id = '@%s/%s' % (my_comment['author'], my_comment['permlink'])
-        self.db.queue_push('vote', {'power': power, 'post_id': post_id, 'voter': self.config['guidedog']['account']})
+        for supporter in self.config['financial_supporters']:
+            voting_power = self.steem.get_account(supporter['account'])['voting_power']
+            if voting_power >  supporter['voteOver']:
+                self.db.queue_push('vote', {'power': supporter['weight'], 'post_id': post_id, 'voter': supporter['account'] })
 
     def generate_praise_message(self, post):
+        reward = "0.6 STEEM"
         rt = ['멋진', '섹시한', '훈훈한', '시크한', '알흠다운', '황홀한', '끝내주는', '요염한',
         '흥분되는', '짱재밌는', '잊지못할', '감동적인', '배꼽잡는', '러블리한', '쏘쿨한', '분위기있는']
         pet = sys_random.choice(self.config['guidedog']['pets'])
@@ -240,43 +235,46 @@ class GuideDog:
         pet_photo = sys_random.choice(pet['photo'])
         if post['bot_signal'] == '@칭찬해':
             msg = ('%s @%s님 안녕하세요! %s 입니다. %s @%s님 소개로 왔어요. 칭찬이 아주 자자 하시더라구요!! '
-                    '%s 글 올려주신것 너무 감사해요. 작은 선물로 0.3 SBD를 보내드립니다 ^^'
+                    '%s 글 올려주신것 너무 감사해요. 작은 선물로 %s를 보내드립니다 ^^'
                     % ( 
                     sys_random.choice(rt),
                     post['parent_author'],
                     pet_name,
                     sys_random.choice(rt),
                     post['author'],
-                    sys_random.choice(rt)))
+                    sys_random.choice(rt),
+                    reward))
         elif post['bot_signal'] == '@축하해':
             msg = (('%s @%s님 안녕하세요! %s 입니다. %s @%s님이 그러는데 정말 %s 일이 있으시다고 하더라구요!! '
-                    '정말 축하드려요!! 기분좋은 날 맛좋은 '+ sys_random.choice(['개껌 하나', '개밥 한그릇', '개뼈다구 하나']) +' 사드시라고 0.3 SBD를 보내드립니다 ^^')
+                    '정말 축하드려요!! 기분좋은 날 맛좋은 '+ sys_random.choice(['개껌 하나', '개밥 한그릇', '개뼈다구 하나']) +' 사드시라고 %s를 보내드립니다 ^^')
                     % (
                     sys_random.choice(rt),
                     post['parent_author'],
                     pet_name,
                     sys_random.choice(rt),
                     post['author'],
-                    sys_random.choice(rt)))
+                    sys_random.choice(rt),
+                    reward))
         elif post['bot_signal'] == '@감사해':
             msg = ('%s @%s님 안녕하세요! %s 입니다. %s @%s님이 너무너무 고마워 하셔서 저도 같이 감사드리려고 이렇게 왔어요!! '
-                    '%s 하루 보내시라고 0.3 SBD를 보내드립니다 ^^'
+                    '%s 하루 보내시라고 %s를 보내드립니다 ^^'
                     % (
                     sys_random.choice(rt),
                     post['parent_author'],
                     pet_name,
                     sys_random.choice(rt),
                     post['author'],
-                    sys_random.choice(rt)))
+                    sys_random.choice(rt),
+                    reward))
         elif post['bot_signal'] == '@위로해':
             msg = (('@%s님 안녕하세요. %s 입니다. @%s께 이야기 다 들었습니다. ' +
                    sys_random.choice(['세상사 다 그런것 아닐까요?. ', '인생지사 새옹지마라고 하잖아요. ']) +
-                   '힘든일이 있으면 반드시 좋은일도 있대요! 기운 내시라고 0.3 SBD를 보내드립니다.')
+                   '힘든일이 있으면 반드시 좋은일도 있대요! 기운 내시라고 %s를 보내드립니다.')
                     % (
                     post['parent_author'],
                     pet_name,
-                    post['author']
-                    ))
+                    post['author'],
+                    reward))
         msg = ('<table><tr><td>%s</td><td>%s</td></tr></table>'
                 % (pet_photo, msg))
         return msg
@@ -287,10 +285,10 @@ class GuideDog:
         # Push vote to queue
         my_comment = my_comment['operations'][0][1]
         post_id = '@%s/%s' % (my_comment['author'], my_comment['permlink'])
-        self.db.queue_push('vote', {'power': 20, 'post_id': post_id, 'voter': self.config['guidedog']['account']})
+        self.db.queue_push('vote', {'power': 100, 'post_id': post_id, 'voter': self.config['guidedog']['account']})
         # Push transfer to queue
         self.db.queue_push('transfer', {'send_to': post['parent_author'],
-            'amount': 0.3,
+            'amount': 0.6,
             'memo': '@%s 님께서 가이드독 활동을 통해 모은 포인트로 감사의 표시를 하였습니다.'
             '해당 글을 확인해 주세요! https://steemit.com/%s' % (post['author'], post['parent_post_id']) })
 
