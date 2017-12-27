@@ -94,7 +94,7 @@ class Feed:
 
     def check_signal(self, plain_post):
         # Check signals in the body
-        for signal in self.config['report_signals'] + self.config['praise_signals']:
+        for signal in self.config['report_signals'] + self.config['praise_signals'] + self.config['promote_signals']:
             # Match the first signal only
             if signal in plain_post.get('body',''):
                 return signal
@@ -153,6 +153,8 @@ class Feed:
                 plain_post['signal_type'] = 'spam'
             elif plain_post['bot_signal'] in self.config['praise_signals']:
                 plain_post['signal_type'] = 'praise'
+            elif plain_post['bot_signal'] in self.config['promote_signals']:
+                plain_post['signal_type'] = 'promote'
             else:
                 plain_post['signal_type'] = 'unknown'
             if not self.is_valid(plain_post):

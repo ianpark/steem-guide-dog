@@ -29,6 +29,8 @@ class DataStore:
     db_post = TinyDB('db/post_queue.json')
     db_vote = TinyDB('db/vote_queue.json')
     db_transfer = TinyDB('db/transfer_queue.json')
+    db_resteem = TinyDB('db/resteem_queue.json')
+    db_promote = TinyDB('db/promote.json')
     
     mutex_post = Lock()
     mutex_vote = Lock()
@@ -84,6 +86,16 @@ class DataStore:
         self.mutex_main.release()
         return result
 
+    def is_promoted(self, post):
+        self.mutex_main.acquire()
+        tbl = self.db_promote
+        qry = Query()
+        result = tbl.contains(
+                    (qry.author == post['author']) &
+                    (qry.permlink == post['permlink']))
+        self.mutex_main.release()
+        return result
+
     def is_reported(self, post):
         self.mutex_main.acquire()
         tbl = self.db.table('reports')
@@ -133,6 +145,20 @@ class DataStore:
         })
         self.mutex_main.release()
         return True   
+
+    def store_promote(self, post):
+        self.mutex_main.acquire()
+        self.db_promote.insert({
+            'reporter': post['author'],
+            'author': post['parent_author'],
+            'permlink': post['parent_permlink'],
+            'comment_permlink': post['permlink'],
+            'report_time': datetime.now(),
+            'bot_signal': post['bot_signal'],
+            'processed': False
+        })
+        self.mutex_main.release()
+        return True 
 
     def add_user(self, user_id):
         user = self.db_user.table('user')

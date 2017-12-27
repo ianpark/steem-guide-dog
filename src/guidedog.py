@@ -102,6 +102,14 @@ class GuideDog:
             self.log.info(e)
             raise
 
+    def resteem(self, post_id, resteemer):
+        try:
+            self.steem.commit.resteem(post_id, resteemer)
+            self.log.info('Resteemed %s by %s' % (post_id, resteemer))
+        except Exception as e:
+            self.log.info(e)
+            raise
+
     def daily_report(self):
         last_daily_report = None
         try:
@@ -177,6 +185,17 @@ class GuideDog:
                 self.log.error(data)
                 self.log.error(e)
 
+        data = self.db.queue_get('resteem')
+        if data:
+            try:
+                resteem = data['data']
+                self.resteem(resteem['post_id'], resteem['resteemer'])
+                self.db.queue_finish('resteem', data)
+            except Exception as e:
+                self.log.error('Failed: resteem (will retry)')
+                self.log.error(data)
+                self.log.error(e)
+
         self.daily_report()
         # Prevent wasting the donated funds
         # self.try_staking()
@@ -196,8 +215,24 @@ class GuideDog:
         
             point = self.db.get_usable_point(post['author'])
             self.log.info('Praise request - user: %s point: %s' % (post['author'], point ))
-            if point >= 1:
+            if post['author'] in self.config["whitelist"]:
                 self.leave_praise(post)
+            elif point >= 1:
+                self.leave_praise(post)
+                self.db.use_point(post['author'], 1)
+            else:
+                self.log.info('Not enough point! %s %s' % (post['author'], point))
+                self.send_no_point_alarm(post)
+        elif post['signal_type'] == 'promote':
+            if self.db.is_promoted(post):
+                self.log.info('Skip request: already promoted')
+                return
+            point = self.db.get_usable_point(post['author'])
+            self.log.info('Promote request - user: %s point: %s' % (post['author'], point ))
+            if post['author'] in self.config["whitelist"]:
+                self.promote(post)
+            elif point >= 2:
+                self.promote(post)
                 self.db.use_point(post['author'], 1)
             else:
                 self.log.info('Not enough point! %s %s' % (post['author'], point))
@@ -215,18 +250,22 @@ class GuideDog:
         lines.extend(self.message)
         return '\n'.join(lines)
 
-    def process_spam(self, post):
-        my_comment = self.create_post(post['parent_post_id'], self.generate_warning_message(post))
-        self.db.store_report(post)
-        # Push voting to the queue
-        my_comment = my_comment['operations'][0][1]
-        post_id = '@%s/%s' % (my_comment['author'], my_comment['permlink'])
+    def supporters_vote(self, post_id):
         for supporter in self.config['financial_supporters']:
             voting_power = self.steem.get_account(supporter['account'])['voting_power']
             if voting_power >  supporter['voteOver']:
                 self.db.queue_push('vote', {'power': supporter['weight'], 'post_id': post_id, 'voter': supporter['account'] })
 
-    def generate_praise_message(self, post):
+    def process_spam(self, post):
+        my_comment = self.create_post(post['parent_post_id'], self.generate_warning_message(post))
+        self.db.store_report(post)
+
+        # Vote the comment
+        my_comment = my_comment['operations'][0][1]
+        post_id = '@%s/%s' % (my_comment['author'], my_comment['permlink'])
+        supporters_vote(post_id)
+
+    def generate_benefit_message(self, post):
         reward = "0.6 STEEM"
         rt = ['멋진', '섹시한', '훈훈한', '시크한', '알흠다운', '황홀한', '끝내주는', '요염한',
         '흥분되는', '짱재밌는', '잊지못할', '감동적인', '배꼽잡는', '러블리한', '쏘쿨한', '분위기있는']
@@ -275,12 +314,20 @@ class GuideDog:
                     pet_name,
                     post['author'],
                     reward))
+        elif post['bot_signal'] == '@홍보해':
+            msg = (('@%s님 안녕하세요. %s 입니다. @%s님이 이 글을 너무 좋아하셔서, 저에게 홍보를 부탁 하셨습니다.' +
+                    ' 이 글은 @krguidedog에 의하여 리스팀 되었으며, 가이드독 서포터들로부터 보팅을 받으셨습니다. 축하드립니다!')
+                    % (
+                    post['parent_author'],
+                    pet_name,
+                    post['author'],
+                    ))
         msg = ('<table><tr><td>%s</td><td>%s</td></tr></table>'
                 % (pet_photo, msg))
         return msg
 
     def leave_praise(self, post):
-        my_comment = self.create_post(post['parent_post_id'], self.generate_praise_message(post))
+        my_comment = self.create_post(post['parent_post_id'], self.generate_benefit_message(post))
         self.db.store_praise(post)
         # Push vote to queue
         my_comment = my_comment['operations'][0][1]
@@ -291,6 +338,13 @@ class GuideDog:
             'amount': 0.6,
             'memo': '@%s 님께서 가이드독 활동을 통해 모은 포인트로 감사의 표시를 하였습니다.'
             '해당 글을 확인해 주세요! https://steemit.com/%s' % (post['author'], post['parent_post_id']) })
+
+    def promote(self, post):
+        my_comment = self.create_post(post['parent_post_id'], self.generate_benefit_message(post))
+        self.db.store_promote(post)
+        self.db.queue_push('resteem', {'post_id': post_id, 'resteemer': self.config['guidedog']['account']})
+        self.supporters_vote(post['parent_post_id'])
+
 
     def send_no_point_alarm(self, post):
         memo = '가이드독 포인트가 부족합니다. 스팸글 신고를 통해 포인트를 쌓아주세요. 자세한 정보는 저의 계정을 방문하셔서 최신 글을 읽어주세요.'

@@ -16,6 +16,7 @@
     ],
     "report_signals": ["kr-guide!", "전혀이해가안돼!", "무슨개소리야!"],
     "praise_signals": ["@칭찬해", "@축하해", "@감사해", "@위로해"],
+    "promote_signals": ["@홍보해"],
     "guidedog": {
         "account": "krguidedog",
         "nickname": "KR Guide Dog",
@@ -120,7 +121,7 @@
         ],
         "message_file": "etc/greeting.txt"
     },
-    "whitelist": [""],
+    "whitelist": ["asbear"],
     "blacklist": ["jordbruk", "newbieji1", "rashley01"],
     "reward": {
         "medals" : [
