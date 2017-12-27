@@ -85,9 +85,8 @@ class GuideDog:
             self.steem.commit.vote(post_id, power, voter)
             self.log.info('%s voted on %s with %s percentage' % (voter, post_id, power))
         except Exception as e:
-            self.log.info(e)
-            raise
-
+            self.log.info("Failed to vote: " + str(e))
+            pass
 
     def transfer(self, send_to, amount, memo):
         try:
@@ -99,7 +98,7 @@ class GuideDog:
                 memo=memo)
             self.log.info('Transferred %s to %s: %s' % (amount, send_to, memo))
         except Exception as e:
-            self.log.info(e)
+            self.log.info("Failed to transfer: " + str(e))
             raise
 
     def resteem(self, post_id, resteemer):
@@ -107,8 +106,8 @@ class GuideDog:
             self.steem.commit.resteem(post_id, resteemer)
             self.log.info('Resteemed %s by %s' % (post_id, resteemer))
         except Exception as e:
-            self.log.info(e)
-            raise
+            self.log.info("Failed to resteem: " + str(e))
+            pass
 
     def daily_report(self):
         last_daily_report = None
@@ -342,7 +341,7 @@ class GuideDog:
     def promote(self, post):
         my_comment = self.create_post(post['parent_post_id'], self.generate_benefit_message(post))
         self.db.store_promote(post)
-        self.db.queue_push('resteem', {'post_id': post_id, 'resteemer': self.config['guidedog']['account']})
+        self.db.queue_push('resteem', {'post_id': post['parent_post_id'], 'resteemer': self.config['guidedog']['account']})
         self.supporters_vote(post['parent_post_id'])
 
 

@@ -35,6 +35,7 @@ class DataStore:
     mutex_post = Lock()
     mutex_vote = Lock()
     mutex_transfer = Lock()
+    mutex_resteem = Lock()
     mutex_main = Lock()
 
     log = logging.getLogger(__name__)
