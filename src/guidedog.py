@@ -214,7 +214,7 @@ class GuideDog:
         
             point = self.db.get_usable_point(post['author'])
             self.log.info('Praise request - user: %s point: %s' % (post['author'], point ))
-            if post['author'] in self.config["whitelist"]:
+            if post['author'] in self.config["praise_curator"]:
                 self.leave_praise(post)
             elif point >= 1:
                 self.leave_praise(post)
@@ -228,7 +228,7 @@ class GuideDog:
                 return
             point = self.db.get_usable_point(post['author'])
             self.log.info('Promote request - user: %s point: %s' % (post['author'], point ))
-            if post['author'] in self.config["whitelist"]:
+            if post['author'] in self.config["promote_curator"]:
                 self.promote(post)
             elif point >= 2:
                 self.promote(post)

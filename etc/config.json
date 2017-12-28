@@ -145,6 +145,8 @@
         ],
         "message_file": "etc/greeting.txt"
     },
+    "praise_curator": ["asbear", "abdullar"],
+    "promote_curator": ["asbear", "abdullar"],
     "whitelist": ["asbear"],
     "blacklist": ["jordbruk", "newbieji1", "rashley01"],
     "reward": {
