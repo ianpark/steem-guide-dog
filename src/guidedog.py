@@ -249,8 +249,8 @@ class GuideDog:
         lines.extend(self.message)
         return '\n'.join(lines)
 
-    def supporters_vote(self, post_id):
-        for supporter in self.config['financial_supporters']:
+    def supporters_vote(self, post_id, supporters):
+        for supporter in supporters:
             voting_power = self.steem.get_account(supporter['account'])['voting_power']
             if voting_power >  supporter['voteOver']:
                 self.db.queue_push('vote', {'power': supporter['weight'], 'post_id': post_id, 'voter': supporter['account'] })
@@ -262,7 +262,7 @@ class GuideDog:
         # Vote the comment
         my_comment = my_comment['operations'][0][1]
         post_id = '@%s/%s' % (my_comment['author'], my_comment['permlink'])
-        self.supporters_vote(post_id)
+        self.supporters_vote(post_id, self.config['spam_supporters'])
 
     def generate_benefit_message(self, post):
         reward = "0.6 STEEM"
@@ -331,7 +331,8 @@ class GuideDog:
         # Push vote to queue
         my_comment = my_comment['operations'][0][1]
         post_id = '@%s/%s' % (my_comment['author'], my_comment['permlink'])
-        self.db.queue_push('vote', {'power': 100, 'post_id': post_id, 'voter': self.config['guidedog']['account']})
+        self.supporters_vote(post_id, self.config['praise_supporters'])
+
         # Push transfer to queue
         self.db.queue_push('transfer', {'send_to': post['parent_author'],
             'amount': 0.6,
@@ -342,7 +343,7 @@ class GuideDog:
         my_comment = self.create_post(post['parent_post_id'], self.generate_benefit_message(post))
         self.db.store_promote(post)
         self.db.queue_push('resteem', {'post_id': post['parent_post_id'], 'resteemer': self.config['guidedog']['account']})
-        self.supporters_vote(post['parent_post_id'])
+        self.supporters_vote(post['parent_post_id'], self.config['promotion_supporters'])
 
 
     def send_no_point_alarm(self, post):

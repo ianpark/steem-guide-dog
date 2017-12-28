@@ -2,7 +2,31 @@
     "keyfile_path": "~/.steem/keys.json",
     "main_tag": "kr",
     "tag_prefix": "kr-",
-    "financial_supporters": [
+    "spam_supporters": [
+        {
+            "account": "asbear",
+            "weight": 25,
+            "voteOver": 50
+        },
+        {
+            "account": "krguidedog",
+            "weight": 100,
+            "voteOver": 30
+        }
+    ],
+    "praise_supporters": [
+        {
+            "account": "asbear",
+            "weight": 25,
+            "voteOver": 50
+        },
+        {
+            "account": "krguidedog",
+            "weight": 100,
+            "voteOver": 30
+        }
+    ],
+    "promotion_supporters": [
         {
             "account": "asbear",
             "weight": 25,
