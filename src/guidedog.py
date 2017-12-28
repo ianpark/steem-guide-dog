@@ -226,6 +226,10 @@ class GuideDog:
             if self.db.is_promoted(post):
                 self.log.info('Skip request: already promoted')
                 return
+            # Beta test period - free promote!
+            self.promote(post)
+            return
+
             point = self.db.get_usable_point(post['author'])
             self.log.info('Promote request - user: %s point: %s' % (post['author'], point ))
             if post['author'] in self.config["promote_curator"]:
