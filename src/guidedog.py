@@ -249,6 +249,11 @@ class GuideDog:
         lines.extend(self.message)
         return '\n'.join(lines)
 
+    def vote_on_post(self, post, supporters):
+        post = post['operations'][0][1]
+        post_id = '@%s/%s' % (post['author'], post['permlink'])
+        self.supporters_vote(post_id, supporters)
+
     def supporters_vote(self, post_id, supporters):
         for supporter in supporters:
             voting_power = self.steem.get_account(supporter['account'])['voting_power']
@@ -258,11 +263,7 @@ class GuideDog:
     def process_spam(self, post):
         my_comment = self.create_post(post['parent_post_id'], self.generate_warning_message(post))
         self.db.store_report(post)
-
-        # Vote the comment
-        my_comment = my_comment['operations'][0][1]
-        post_id = '@%s/%s' % (my_comment['author'], my_comment['permlink'])
-        self.supporters_vote(post_id, self.config['spam_supporters'])
+        self.vote_on_post(my_comment, self.config['spam_supporters'])
 
     def generate_benefit_message(self, post):
         reward = "0.6 STEEM"
@@ -328,10 +329,7 @@ class GuideDog:
     def leave_praise(self, post):
         my_comment = self.create_post(post['parent_post_id'], self.generate_benefit_message(post))
         self.db.store_praise(post)
-        # Push vote to queue
-        my_comment = my_comment['operations'][0][1]
-        post_id = '@%s/%s' % (my_comment['author'], my_comment['permlink'])
-        self.supporters_vote(post_id, self.config['praise_supporters'])
+        self.vote_on_post(my_comment, self.config['praise_supporters'])
 
         # Push transfer to queue
         self.db.queue_push('transfer', {'send_to': post['parent_author'],
@@ -342,6 +340,7 @@ class GuideDog:
     def promote(self, post):
         my_comment = self.create_post(post['parent_post_id'], self.generate_benefit_message(post))
         self.db.store_promote(post)
+        self.vote_on_post(my_comment, self.config['praise_supporters'])
         self.db.queue_push('resteem', {'post_id': post['parent_post_id'], 'resteemer': self.config['guidedog']['account']})
         self.supporters_vote(post['parent_post_id'], self.config['promotion_supporters'])
 
