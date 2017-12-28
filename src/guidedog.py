@@ -262,7 +262,7 @@ class GuideDog:
         # Vote the comment
         my_comment = my_comment['operations'][0][1]
         post_id = '@%s/%s' % (my_comment['author'], my_comment['permlink'])
-        supporters_vote(post_id)
+        self.supporters_vote(post_id)
 
     def generate_benefit_message(self, post):
         reward = "0.6 STEEM"
