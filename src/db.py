@@ -92,8 +92,8 @@ class DataStore:
         tbl = self.db_promote
         qry = Query()
         result = tbl.contains(
-                    (qry.author == post['author']) &
-                    (qry.permlink == post['permlink']))
+                    (qry.author == post['parent_author']) &
+                    (qry.permlink == post['parent_permlink']))
         self.mutex_main.release()
         return result
 
@@ -102,8 +102,8 @@ class DataStore:
         tbl = self.db.table('reports')
         qry = Query()
         result = tbl.contains(
-                    (qry.author == post['author']) &
-                    (qry.permlink == post['permlink']))
+                    (qry.author == post['parent_author']) &
+                    (qry.permlink == post['parent_permlink']))
         self.mutex_main.release()
         return result
 
