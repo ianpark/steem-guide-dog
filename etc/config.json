@@ -5,37 +5,47 @@
     "spam_supporters": [
         {
             "account": "asbear",
-            "weight": 25,
+            "weight": 10,
             "voteOver": 50
         },
         {
             "account": "krguidedog",
-            "weight": 100,
+            "weight": 10,
             "voteOver": 30
         }
     ],
     "praise_supporters": [
         {
             "account": "asbear",
-            "weight": 25,
+            "weight": 10,
             "voteOver": 50
         },
         {
             "account": "krguidedog",
-            "weight": 100,
+            "weight": 10,
             "voteOver": 30
         }
     ],
     "promotion_supporters": [
         {
             "account": "asbear",
-            "weight": 20,
+            "weight": 15,
             "voteOver": 30
         },
         {
             "account": "krguidedog",
             "weight": 10,
             "voteOver": 30
+        },
+        {
+            "account": "sjchoi",
+            "weight": 15,
+            "voteOver": 90
+        },
+        {
+            "account": "feyee95",
+            "weight": 50,
+            "voteOver": 85
         }
     ],
     "report_signals": ["kr-guide!", "전혀이해가안돼!", "무슨개소리야!"],
@@ -145,8 +155,8 @@
         ],
         "message_file": "etc/greeting.txt"
     },
-    "praise_curator": ["asbear", "abdullar"],
-    "promote_curator": ["asbear", "abdullar"],
+    "praise_curator": ["asbear", "abdullar", "sochul"],
+    "promote_curator": ["asbear", "abdullar", "sochul", "feyee95", "sjchoi"],
     "whitelist": ["asbear"],
     "blacklist": ["jordbruk", "newbieji1", "rashley01"],
     "reward": {
