@@ -58,26 +58,33 @@ class GuideDog:
 
     def try_staking(self):
         try:
-          if self.steem.get_account('krguidedog')['voting_power'] > 9000:
-              self.steem.commit.post(
-                  title='guidedog training',
-                  body="guidedog antispam service",
+          if self.steem.get_account('asbear')['voting_power'] > 9000:
+             comment = self.steem.commit.post(
+                  title='guidedog public fund',
+                  body="guidedog antispam service: public fund raising for spam reporters",
                   author=self.config['guidedog']['account'],
                   permlink=None,
-                  reply_identifier=sys_random.choice(["@krguidedog/test-kr-guidedog-please-ignore",
-                                                    "@krguidedog/test-kr-guidedog-please-ignore-2",
-                                                    "@krguidedog/kr-guiddog-test",
-                                                    "@krguidedog/test4",
-                                                    "@krguidedog/test5",
-                                                    "@krguidedog/test6"]),
+                  reply_identifier=sys_random.choice(["@krguidedog/kr-2017-8-31",
+                                                    "@krguidedog/kr-2017-9-1",
+                                                    "@krguidedog/kr-2017-9-2",
+                                                    "@krguidedog/kr-2017-9-3",
+                                                    "@krguidedog/kr-2017-9-4",
+                                                    "@krguidedog/kr-2017-9-5",
+                                                    "@krguidedog/kr-2017-9-6",
+                                                    "@krguidedog/kr-2017-9-7"]),
                   json_metadata=None,
                   comment_options=None,
                   community=None,
                   tags=None,
                   beneficiaries=None,
-                  self_vote=True
-              )
+                  self_vote=False
+             )
+             self.log.info('Staking vote..')
+             post = comment['operations'][0][1]
+             post_id = '@%s/%s' % (post['author'], post['permlink'])
+             self.steem.commit.vote(post_id, 100, 'asbear')
         except Exception as e:
+          self.log.info('Staking failed' + str(e))
           pass
 
     def vote(self, post_id, power, voter):
@@ -197,7 +204,7 @@ class GuideDog:
 
         self.daily_report()
         # Prevent wasting the donated funds
-        # self.try_staking()
+        self.try_staking()
 
     def handle_post(self, post):
         self.log.info("New Command [%s -> %s -> %s] : %s" % (post['author'], post['bot_signal'], post['parent_author'], post))
@@ -226,15 +233,12 @@ class GuideDog:
             if self.db.is_promoted(post):
                 self.log.info('Skip request: already promoted')
                 return
-            # Beta test period - free promote!
-            self.promote(post)
-            return
 
             point = self.db.get_usable_point(post['author'])
             self.log.info('Promote request - user: %s point: %s' % (post['author'], point ))
             if post['author'] in self.config["promote_curator"]:
                 self.promote(post)
-            elif point >= 2:
+            elif point >= 1:
                 self.promote(post)
                 self.db.use_point(post['author'], 1)
             else:
