@@ -58,34 +58,41 @@ class GuideDog:
 
     def try_staking(self):
         try:
-          if self.steem.get_account('asbear')['voting_power'] > 9000:
-             comment = self.steem.commit.post(
-                  title='guidedog public fund',
-                  body="guidedog antispam service: public fund raising for spam reporters",
-                  author=self.config['guidedog']['account'],
-                  permlink=None,
-                  reply_identifier=sys_random.choice(["@krguidedog/kr-2017-8-31",
-                                                    "@krguidedog/kr-2017-9-1",
-                                                    "@krguidedog/kr-2017-9-2",
-                                                    "@krguidedog/kr-2017-9-3",
-                                                    "@krguidedog/kr-2017-9-4",
-                                                    "@krguidedog/kr-2017-9-5",
-                                                    "@krguidedog/kr-2017-9-6",
-                                                    "@krguidedog/kr-2017-9-7"]),
-                  json_metadata=None,
-                  comment_options=None,
-                  community=None,
-                  tags=None,
-                  beneficiaries=None,
-                  self_vote=False
-             )
-             self.log.info('Staking vote..')
-             post = comment['operations'][0][1]
-             post_id = '@%s/%s' % (post['author'], post['permlink'])
-             self.steem.commit.vote(post_id, 100, 'asbear')
+          if self.steem.get_account('asbear')['voting_power'] > 3000:
+            comment_options = {
+                'max_accepted_payout': '0.000 SBD',
+                'percent_steem_dollars': 0,
+                'allow_votes': True,
+                'allow_curation_rewards': True,
+                'extensions': []
+            }
+            comment = self.steem.commit.post(
+                 title='guidedog public fund',
+                 body="guidedog antispam service: public fund raising for spam reporters",
+                 author=self.config['guidedog']['account'],
+                 permlink=None,
+                 reply_identifier=sys_random.choice(["@krguidedog/kr-2017-8-31",
+                                                   "@krguidedog/kr-2017-9-1",
+                                                   "@krguidedog/kr-2017-9-2",
+                                                   "@krguidedog/kr-2017-9-3",
+                                                   "@krguidedog/kr-2017-9-4",
+                                                   "@krguidedog/kr-2017-9-5",
+                                                   "@krguidedog/kr-2017-9-6",
+                                                   "@krguidedog/kr-2017-9-7"]),
+                 json_metadata=None,
+                 comment_options=comment_options,
+                 community=None,
+                 tags=None,
+                 beneficiaries=None,
+                 self_vote=False
+            )
+            self.log.info('Staking vote..')
+            post = comment['operations'][0][1]
+            post_id = '@%s/%s' % (post['author'], post['permlink'])
+            self.steem.commit.vote(post_id, 1, 'asbear')
         except Exception as e:
-          self.log.info('Staking failed' + str(e))
-          pass
+            self.log.info('Staking failed' + str(e))
+            pass
 
     def vote(self, post_id, power, voter):
         try:
