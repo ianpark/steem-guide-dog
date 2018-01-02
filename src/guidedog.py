@@ -58,14 +58,7 @@ class GuideDog:
 
     def try_staking(self):
         try:
-          if self.steem.get_account('asbear')['voting_power'] > 3000:
-            comment_options = {
-                'max_accepted_payout': '0.000 SBD',
-                'percent_steem_dollars': 0,
-                'allow_votes': True,
-                'allow_curation_rewards': True,
-                'extensions': []
-            }
+          if self.steem.get_account('asbear')['voting_power'] > 9000:
             comment = self.steem.commit.post(
                  title='guidedog public fund',
                  body="guidedog antispam service: public fund raising for spam reporters",
@@ -80,7 +73,7 @@ class GuideDog:
                                                    "@krguidedog/kr-2017-9-6",
                                                    "@krguidedog/kr-2017-9-7"]),
                  json_metadata=None,
-                 comment_options=comment_options,
+                 comment_options=None,
                  community=None,
                  tags=None,
                  beneficiaries=None,
@@ -89,7 +82,7 @@ class GuideDog:
             self.log.info('Staking vote..')
             post = comment['operations'][0][1]
             post_id = '@%s/%s' % (post['author'], post['permlink'])
-            self.steem.commit.vote(post_id, 1, 'asbear')
+            self.steem.commit.vote(post_id, 100, 'asbear')
         except Exception as e:
             self.log.info('Staking failed' + str(e))
             pass
@@ -142,6 +135,13 @@ class GuideDog:
                 self.log.info('No activiey is found in ' + newday.strftime("%d %b %Y"))
             else:
                 self.log.info('Creating a daily report for ' + newday.strftime("%d %b %Y"))
+                comment_options = {
+                    'max_accepted_payout': '0.000 SBD',
+                    'percent_steem_dollars': 0,
+                    'allow_votes': True,
+                    'allow_curation_rewards': True,
+                    'extensions': []
+                }
                 comment = self.steem.commit.post(
                     title=result['title'],
                     body=result['body'],
@@ -149,7 +149,7 @@ class GuideDog:
                     permlink=str(uuid.uuid4()),
                     reply_identifier=None,
                     json_metadata=None,
-                    comment_options=None,
+                    comment_options=comment_options,
                     community=None,
                     tags='kr krguidedog antispam',
                     beneficiaries=None,
