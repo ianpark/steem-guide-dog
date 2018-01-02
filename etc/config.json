@@ -5,12 +5,12 @@
     "spam_supporters": [
         {
             "account": "asbear",
-            "weight": 10,
+            "weight": 30,
             "voteOver": 50
         },
         {
             "account": "krguidedog",
-            "weight": 10,
+            "weight": 30,
             "voteOver": 30
         }
     ],
@@ -29,7 +29,7 @@
     "promotion_supporters": [
         {
             "account": "asbear",
-            "weight": 15,
+            "weight": 10,
             "voteOver": 30
         },
         {
@@ -38,15 +38,21 @@
             "voteOver": 30
         },
         {
+            "account": "feyee95",
+            "weight": 30,
+            "voteOver": 85
+        },
+        {
             "account": "sjchoi",
             "weight": 15,
             "voteOver": 90
         },
         {
-            "account": "feyee95",
-            "weight": 30,
+            "account": "happyberrysboy",
+            "weight": 10,
             "voteOver": 85
         }
+
     ],
     "report_signals": ["kr-guide!", "전혀이해가안돼!", "무슨개소리야!"],
     "praise_signals": ["@칭찬해", "@축하해", "@감사해", "@위로해"],
@@ -156,7 +162,8 @@
         "message_file": "etc/greeting.txt"
     },
     "praise_curator": ["asbear", "abdullar", "sochul"],
-    "promote_curator": ["asbear", "abdullar", "sochul", "feyee95", "sjchoi"],
+    "promote_curator": ["asbear", "abdullar", "sochul", "feyee95", "sjchoi", "happyberrysboy", 
+                        "joeuhw", "beajinsu", "mastertri", "coffeenut", "umkin", "bree1042", "floridasnail", "segyepark", "julianpark"],
     "whitelist": ["asbear"],
     "blacklist": ["jordbruk", "newbieji1", "rashley01"],
     "reward": {
