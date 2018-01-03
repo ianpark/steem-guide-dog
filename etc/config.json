@@ -5,12 +5,12 @@
     "spam_supporters": [
         {
             "account": "asbear",
-            "weight": 30,
+            "weight": 15,
             "voteOver": 50
         },
         {
             "account": "krguidedog",
-            "weight": 30,
+            "weight": 15,
             "voteOver": 30
         }
     ],
@@ -163,7 +163,8 @@
     },
     "praise_curator": ["asbear", "abdullar", "sochul"],
     "promote_curator": ["asbear", "abdullar", "sochul", "feyee95", "sjchoi", "happyberrysboy", 
-                        "joeuhw", "beajinsu", "mastertri", "coffeenut", "umkin", "bree1042", "floridasnail", "segyepark", "julianpark"],
+                        "joeuhw", "beajinsu", "mastertri", "coffeenut", "umkin", "bree1042",
+                        "floridasnail", "segyepark", "julianpark", "jjangh1717"],
     "whitelist": ["asbear"],
     "blacklist": ["jordbruk", "newbieji1", "rashley01"],
     "reward": {

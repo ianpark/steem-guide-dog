@@ -153,7 +153,7 @@ class GuideDog:
                     community=None,
                     tags='kr krguidedog antispam',
                     beneficiaries=None,
-                    self_vote=True)
+                    self_vote=False)
 
             # All succeeded. Update the last report day
             with open("db/daily_report", "w") as f:
