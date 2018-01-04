@@ -22,7 +22,8 @@ class PostStream:
     def start_stream(self):
         self.log.info('Start new block chain and stream %s' % self.bp.last())
         #steemd = Steemd(['https://steemd.steemit.com'])
-        steemd = Steemd(['https://steemd.privex.io'])
+        #steemd = Steemd(['https://steemd.privex.io'])
+        steemd = Steemd(['https://api.steemit.com'])
         self.blockchain_error = 0
         self.blockchain = Blockchain(steemd)
         if self.bp.last():
