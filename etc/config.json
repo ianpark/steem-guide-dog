@@ -5,57 +5,57 @@
     "spam_supporters": [
         {
             "account": "asbear",
-            "weight": 10,
-            "voteOver": 50
+            "weight": 7,
+            "voteOver": 5000
         },
         {
             "account": "krguidedog",
-            "weight": 10,
-            "voteOver": 30
+            "weight": 7,
+            "voteOver": 3000
         }
     ],
     "praise_supporters": [
         {
             "account": "asbear",
-            "weight": 10,
-            "voteOver": 50
+            "weight": 5,
+            "voteOver": 5000
         },
         {
             "account": "krguidedog",
-            "weight": 10,
-            "voteOver": 30
+            "weight": 5,
+            "voteOver": 3000
         }
     ],
     "promotion_supporters": [
         {
             "account": "asbear",
             "weight": 10,
-            "voteOver": 30
+            "voteOver": 3000
         },
         {
             "account": "krguidedog",
             "weight": 10,
-            "voteOver": 30
+            "voteOver": 3000
         },
         {
             "account": "feyee95",
             "weight": 30,
-            "voteOver": 85
+            "voteOver": 8500
         },
         {
             "account": "sjchoi",
             "weight": 15,
-            "voteOver": 90
+            "voteOver": 9000
         },
         {
             "account": "happyberrysboy",
             "weight": 10,
-            "voteOver": 85
+            "voteOver": 8500
         },
         {
             "account": "joeuhw",
             "weight": 15,
-            "voteOver": 90
+            "voteOver": 9000
         }
     ],
     "report_signals": ["kr-guide!", "전혀이해가안돼!", "무슨개소리야!"],

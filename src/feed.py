@@ -102,8 +102,8 @@ class Feed:
         return None
 
     def is_valid(self, post):
-        if post['signal_type'] == 'praise':
-            # Block self praise
+        if post['signal_type'] == 'praise' or post['signal_type'] == 'promote':
+            # Block self praise or self promotion
             if post['author'] == post['parent_author']:
                 self.log.info('Author and parent author is the same')
                 return False
@@ -124,7 +124,7 @@ class Feed:
 
     def handle_data(self, plain_post):
         # Skip long comments
-        if len(plain_post.get('body','')) > 512:
+        if len(plain_post.get('body','')) > 1024:
             return
         # Skip comments with no signal
         signal_found = self.check_signal(plain_post)
