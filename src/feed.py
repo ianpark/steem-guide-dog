@@ -10,44 +10,39 @@ from steem.blockchain import Blockchain
 from steem.post import Post
 from block_pointer import BlockPointer
 from steem.steemd import Steemd
+from steem import Steem
+
 
 class PostStream:
     log = logging.getLogger(__name__)
     last_shown_no = 0
-    blockchain_error = 0
     def __init__(self, block_pointer):
         self.bp = block_pointer
         self.start_stream()
+        self.steem = Steem()
 
     def start_stream(self):
         self.log.info('Start new block chain and stream %s' % self.bp.last())
-        #steemd = Steemd(['https://steemd.steemit.com'])
-        steemd = Steemd(['https://steemd.privex.io'])
-        self.blockchain_error = 0
-        self.blockchain = Blockchain(steemd)
-        if self.bp.last():
-            self.stream = self.blockchain.stream_from(self.bp.last())
-        else:
-            self.stream = self.blockchain.stream_from()
 
     def get(self):
         try:
-            while True:
-                block = next(self.stream)
-                self.bp.update(block['block'])
-                if block['op'][0] == 'comment':
-                    post = block['op'][1]
-                    post['block_num'] = block['block']
-                    post['timestamp'] = block['timestamp']
-                    if block['block'] > (self.last_shown_no + 100):
-                        self.last_shown_no = block['block']
-                        self.log.info('Processing block: %s' % self.last_shown_no)
-                    return post
+            block = self.steem.get_block(self.bp.last())
+            if block == None:
+                return None
+            output = []
+            for trans in block['transactions']:
+                if trans['operations'][0] == 'comment':
+                    post = trans['operations'][1]
+                    post['block_num'] = self.bp.last()
+                    post['timestamp'] = trans['expiration']
+                    output.append(post)
+            if block['block'] > (self.last_shown_no + 100):
+                self.last_shown_no = self.bp.last()
+                self.log.info('Processing block: %s' % self.last_shown_no)
+            self.bp.update(self.bp.last() + 1)
+            return output
         except Exception as e:
             self.log.error('Failed receiving from the stream')
-            self.blockchain_error += 1
-            if self.blockchain_error > 3:
-                self.start_stream()
             raise
 
 class Feed:
@@ -80,12 +75,18 @@ class Feed:
         self.log.info ('Start Feed')
         while self.run:
             try:
-                plain_post = self.ps.get()
-                if not plain_post.get('parent_author', ''):
+                trans = self.ps.get()
+                if trans == None:
+                    # No block is created yet
+                    sleep(1)
                     continue
-                if plain_post.get('parent_permlink', '').startswith('re-'):
-                    continue
-                self.handle_data(plain_post)
+
+                for plain_post in trans:
+                    if not plain_post.get('parent_author', ''):
+                        continue
+                    if plain_post.get('parent_permlink', '').startswith('re-'):
+                        continue
+                    self.handle_data(plain_post)
             except Exception as e:
                 self.log.error("Failed collecting and processing the post")
                 self.log.error(e)
