@@ -31,18 +31,18 @@ class PostStream:
                 return None
             output = []
             for trans in block['transactions']:
-                if trans['operations'][0] == 'comment':
-                    post = trans['operations'][1]
+                if trans['operations'][0][0] == 'comment':
+                    post = trans['operations'][0][1]
                     post['block_num'] = self.bp.last()
                     post['timestamp'] = trans['expiration']
                     output.append(post)
-            if block['block'] > (self.last_shown_no + 100):
+            if self.bp.last() > (self.last_shown_no + 100):
                 self.last_shown_no = self.bp.last()
                 self.log.info('Processing block: %s' % self.last_shown_no)
             self.bp.update(self.bp.last() + 1)
             return output
         except Exception as e:
-            self.log.error('Failed receiving from the stream')
+            self.log.error('Failed receiving from the stream: ' + str(e))
             raise
 
 class Feed:
@@ -80,7 +80,6 @@ class Feed:
                     # No block is created yet
                     sleep(1)
                     continue
-
                 for plain_post in trans:
                     if not plain_post.get('parent_author', ''):
                         continue
