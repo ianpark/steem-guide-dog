@@ -21,11 +21,8 @@ class PostStream:
 
     def start_stream(self):
         self.log.info('Start new block chain and stream %s' % self.bp.last())
-        #steemd = Steemd(['https://steemd.steemit.com'])
-        #steemd = Steemd(['https://steemd.privex.io'])
-        steemd = Steemd(['https://api.steemit.com'])
         self.blockchain_error = 0
-        self.blockchain = Blockchain(steemd)
+        self.blockchain = Blockchain()
         if self.bp.last():
             self.stream = self.blockchain.stream_from(self.bp.last())
         else:
@@ -45,7 +42,7 @@ class PostStream:
                         self.log.info('Processing block: %s' % self.last_shown_no)
                     return post
         except Exception as e:
-            self.log.error('Failed receiving from the stream')
+            self.log.error('Failed receiving from the stream' + str(e))
             self.blockchain_error += 1
             if self.blockchain_error > 3:
                 self.start_stream()

@@ -211,7 +211,7 @@ class GuideDog:
 
         self.daily_report()
         # Prevent wasting the donated funds
-        self.try_staking()
+        # self.try_staking()
 
     def handle_post(self, post):
         self.log.info("New Command [%s -> %s -> %s] : %s" % (post['author'], post['bot_signal'], post['parent_author'], post))

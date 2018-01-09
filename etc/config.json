@@ -5,13 +5,8 @@
     "spam_supporters": [
         {
             "account": "asbear",
-            "weight": 7,
+            "weight": 15,
             "voteOver": 5000
-        },
-        {
-            "account": "krguidedog",
-            "weight": 7,
-            "voteOver": 3000
         }
     ],
     "praise_supporters": [
@@ -19,11 +14,6 @@
             "account": "asbear",
             "weight": 5,
             "voteOver": 5000
-        },
-        {
-            "account": "krguidedog",
-            "weight": 5,
-            "voteOver": 3000
         }
     ],
     "promotion_supporters": [
@@ -34,7 +24,7 @@
         },
         {
             "account": "krguidedog",
-            "weight": 10,
+            "weight": 100,
             "voteOver": 3000
         },
         {
