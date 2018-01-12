@@ -24,6 +24,9 @@ class GuideDog:
         with open(self.config['guidedog']['message_file']) as f:
             message = f.readlines()
             self.message = [x.strip() for x in message]
+        with open(self.config['guidedog']['copyright_file']) as f:
+            message = f.readlines()
+            self.copyright = [x.strip() for x in message]
         self.last_daily_report = None
         self.daily_report_generator = Publisher(self.db)
         self.daily_report_timestamp = None
@@ -255,14 +258,23 @@ class GuideDog:
             pass
 
     def generate_warning_message(self,post):
-        greet = ('Nice to meet you!' if post['reported_count'] <= 1
-                else 'We have met %s times already!' % post['reported_count'])
-        lines = [sys_random.choice(self.config['guidedog']['photo']),
-                '## Woff, woff!',
-                '#### Hello @%s, %s' % (post['parent_author'], greet)
-                ]
-        lines.extend(self.message)
-        return '\n'.join(lines)
+        if post['bot_signal'] == "@저작권안내":
+            greet = ('저작권 안내입니다.' if post['reported_count'] <= 1
+                    else '%s 번째 저작권 안내입니다.' % post['reported_count'])
+            lines = ['## 저작권 안내',
+                    '#### 안녕하세요 @%s님, %s' % (post['parent_author'], greet)
+                    ]
+            lines.extend(self.copyright)
+            return '\n'.join(lines)
+        else:
+            greet = ('Nice to meet you!' if post['reported_count'] <= 1
+                    else 'We have met %s times already!' % post['reported_count'])
+            lines = [sys_random.choice(self.config['guidedog']['photo']),
+                    '## Woff, woff!',
+                    '#### Hello @%s, %s' % (post['parent_author'], greet)
+                    ]
+            lines.extend(self.message)
+            return '\n'.join(lines)
 
     def vote_on_post(self, post, supporters):
         post = post['operations'][0][1]

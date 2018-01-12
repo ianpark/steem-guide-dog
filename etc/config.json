@@ -48,7 +48,7 @@
             "voteOver": 9000
         }
     ],
-    "report_signals": ["kr-guide!", "전혀이해가안돼!", "무슨개소리야!"],
+    "report_signals": ["kr-guide!", "전혀이해가안돼!", "무슨개소리야!", "@저작권안내"],
     "praise_signals": ["@칭찬해", "@축하해", "@감사해", "@위로해"],
     "promote_signals": ["@홍보해"],
     "guidedog": {
@@ -153,7 +153,8 @@
                 ]
             }
         ],
-        "message_file": "etc/greeting.txt"
+        "message_file": "etc/greeting.txt",
+        "copyright_file": "etc/copyright.txt"
     },
     "praise_curator": ["asbear", "abdullar", "sochul"],
     "promote_curator": ["asbear", "abdullar", "sochul", "feyee95", "sjchoi", "happyberrysboy", 
