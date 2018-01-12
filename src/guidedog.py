@@ -261,7 +261,7 @@ class GuideDog:
         if post['bot_signal'] == "@저작권안내":
             greet = ('저작권 안내입니다.' if post['reported_count'] <= 1
                     else '%s 번째 저작권 안내입니다.' % post['reported_count'])
-            lines = ['## 저작권 안내',
+            lines = ['https://i.imgur.com/2PPRCJq.png',
                     '#### 안녕하세요 @%s님, %s' % (post['parent_author'], greet)
                     ]
             lines.extend(self.copyright)
