@@ -285,6 +285,7 @@ class GuideDog:
         voters = set()
         for vote in votes:
             voters.add(vote['voter'])
+        self.log.info('Voter list' + str(voters))
 
         for supporter in supporters:
             # Skip already voted supporters
@@ -296,6 +297,8 @@ class GuideDog:
                         {'power': supporter['weight'],
                         'post_id': '@%s/%s' % (author, permlink),
                         'voter': supporter['account'] })
+            else:
+                self.log.info('%s already voted' % supporter)
 
     def process_spam(self, post):
         my_comment = self.create_post(post['parent_post_id'], self.generate_warning_message(post))
