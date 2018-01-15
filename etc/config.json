@@ -24,13 +24,13 @@
         },
         {
             "account": "krguidedog",
-            "weight": 100,
+            "weight": 50,
             "voteOver": 3000
         },
         {
             "account": "feyee95",
             "weight": 30,
-            "voteOver": 8500
+            "voteOver": 8000
         },
         {
             "account": "sjchoi",
@@ -160,7 +160,7 @@
     "promote_curator": ["asbear", "abdullar", "sochul", "feyee95", "sjchoi", "happyberrysboy", 
                         "joeuhw", "beajinsu", "mastertri", "coffeenut", "umkin", "bree1042",
                         "floridasnail", "segyepark", "julianpark", "jjangh1717"],
-    "whitelist": ["asbear"],
+    "whitelist": [],
     "blacklist": ["jordbruk", "newbieji1", "rashley01"],
     "reward": {
         "medals" : [
