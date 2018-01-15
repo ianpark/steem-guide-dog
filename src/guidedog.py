@@ -278,14 +278,24 @@ class GuideDog:
 
     def vote_on_post(self, post, supporters):
         post = post['operations'][0][1]
-        post_id = '@%s/%s' % (post['author'], post['permlink'])
-        self.supporters_vote(post_id, supporters)
+        self.supporters_vote(post['author'], post['permlink'], supporters)
 
-    def supporters_vote(self, post_id, supporters):
+    def supporters_vote(self, author, permlink, supporters):
+        votes = self.steem.get_active_votes(author, permlink)
+        voters = set()
+        for vote in votes:
+            voters.add(vote['voter'])
+
         for supporter in supporters:
-            voting_power = self.steem.get_account(supporter['account'])['voting_power']
-            if voting_power >  supporter['voteOver']:
-                self.db.queue_push('vote', {'power': supporter['weight'], 'post_id': post_id, 'voter': supporter['account'] })
+            # Skip already voted supporters
+            if not supporter in voters:
+                voting_power = self.steem.get_account(supporter['account'])['voting_power']
+                if voting_power >  supporter['voteOver']:
+                    self.db.queue_push(
+                        'vote',
+                        {'power': supporter['weight'],
+                        'post_id': '@%s/%s' % (author, permlink),
+                        'voter': supporter['account'] })
 
     def process_spam(self, post):
         my_comment = self.create_post(post['parent_post_id'], self.generate_warning_message(post))
@@ -369,7 +379,7 @@ class GuideDog:
         self.db.store_promote(post)
         self.vote_on_post(my_comment, self.config['praise_supporters'])
         self.db.queue_push('resteem', {'post_id': post['parent_post_id'], 'resteemer': self.config['guidedog']['account']})
-        self.supporters_vote(post['parent_post_id'], self.config['promotion_supporters'])
+        self.supporters_vote(post['parent_author'], post['parent_permlink'], self.config['promotion_supporters'])
 
 
     def send_no_point_alarm(self, post):
