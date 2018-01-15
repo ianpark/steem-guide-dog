@@ -58,6 +58,11 @@ class Feed:
         self.instance = None
         self.run = False
 
+        keypath = os.path.expanduser(self.config['keyfile_path'])
+        with open(keypath) as keyfile:
+            keyfile_json = json.load(keyfile)
+            self.steem = Steem(keys=keyfile_json['krguidedog'])
+
     def start(self):
         if not self.instance:
             self.run = True
@@ -130,6 +135,18 @@ class Feed:
         if not signal_found:
             return
         post = Post(plain_post)
+
+        try:
+            if post.get('depth', 0) == 0:
+                if post['author'] == 'loteem':
+                    post_id = '@%s/%s' % (post['author'], post['permlink'])
+                    self.steem.commit.vote(post_id, 5, 'asbear')
+                    self.steem.commit.vote(post_id, 5, 'krguidedog')
+                    self.log.info('Loteem found!')
+                return
+        except:
+            pass
+
         # Skip comments of which depth is not 1
         if post.get('depth', 0) != 1:
             return
