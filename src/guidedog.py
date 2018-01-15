@@ -260,7 +260,7 @@ class GuideDog:
     def generate_warning_message(self,post):
         if post['bot_signal'] == "@저작권안내":
             greet = ('저작권 안내입니다.' if post['reported_count'] <= 1
-                    else '%s 번째 저작권 안내입니다.' % post['reported_count'])
+                    else '%s 번째 안내입니다.' % post['reported_count'])
             lines = ['https://i.imgur.com/2PPRCJq.png',
                     '#### 안녕하세요 @%s님, %s' % (post['parent_author'], greet)
                     ]
@@ -285,11 +285,10 @@ class GuideDog:
         voters = set()
         for vote in votes:
             voters.add(vote['voter'])
-        self.log.info('Voter list' + str(voters))
 
         for supporter in supporters:
             # Skip already voted supporters
-            if not supporter in voters:
+            if not supporter['account'] in voters:
                 voting_power = self.steem.get_account(supporter['account'])['voting_power']
                 if voting_power >  supporter['voteOver']:
                     self.db.queue_push(
