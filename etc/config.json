@@ -5,16 +5,11 @@
     "spam_supporters": [
         {
             "account": "asbear",
-            "weight": 15,
-            "voteOver": 5000
+            "weight": 10,
+            "voteOver": 3000
         }
     ],
     "praise_supporters": [
-        {
-            "account": "asbear",
-            "weight": 5,
-            "voteOver": 5000
-        }
     ],
     "promotion_supporters": [
         {
@@ -40,12 +35,17 @@
         {
             "account": "happyberrysboy",
             "weight": 10,
-            "voteOver": 8500
+            "voteOver": 7000
         },
         {
             "account": "joeuhw",
             "weight": 15,
             "voteOver": 9000
+        },
+        {
+            "account": "dayoung",
+            "weight": 50,
+            "voteOver": 8000
         }
     ],
     "report_signals": ["kr-guide!", "전혀이해가안돼!", "무슨개소리야!", "@저작권안내"],

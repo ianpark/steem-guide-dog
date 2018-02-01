@@ -4,6 +4,8 @@ Feed
 
 import asyncio
 import logging
+import os
+import json
 from time import sleep
 from concurrent.futures import ThreadPoolExecutor
 from steem.blockchain import Blockchain
@@ -127,15 +129,8 @@ class Feed:
         return True
 
     def handle_data(self, plain_post):
-        # Skip long comments
-        if len(plain_post.get('body','')) > 1024:
-            return
-        # Skip comments with no signal
-        signal_found = self.check_signal(plain_post)
-        if not signal_found:
-            return
         post = Post(plain_post)
-
+        """
         try:
             if post.get('depth', 0) == 0:
                 if post['author'] == 'loteem':
@@ -145,7 +140,16 @@ class Feed:
                     self.log.info('Loteem found!')
                 return
         except:
+            self.log.info('Loteem found but failed to vote!')
             pass
+        """
+        # Skip long comments
+        if len(plain_post.get('body','')) > 1024:
+            return
+        # Skip comments with no signal
+        signal_found = self.check_signal(plain_post)
+        if not signal_found:
+            return
 
         # Skip comments of which depth is not 1
         if post.get('depth', 0) != 1:
