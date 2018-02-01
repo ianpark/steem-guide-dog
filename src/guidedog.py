@@ -13,15 +13,6 @@ from publisher import Publisher
 
 sys_random = random.SystemRandom()
 
-def reputation(number, precision=2):
-    rep = int(number)
-    if rep == 0:
-        return 25
-    score = max([math.log10(abs(rep)) - 9, 0]) * 9 + 25
-    if rep < 0:
-        score = 50 - score
-    return round(score, precision)
-
 class GuideDog:
     log = logging.getLogger(__name__)
     def __init__(self, config, db):
@@ -41,11 +32,20 @@ class GuideDog:
         self.daily_report_generator = Publisher(self.db)
         self.daily_report_timestamp = None
 
-    def create_post(self, post_id, body):
+    def reputation(self, number, precision=2):
+        rep = int(number)
+        if rep == 0:
+            return 25
+        score = max([math.log10(abs(rep)) - 9, 0]) * 9 + 25
+        if rep < 0:
+            score = 50 - score
+        return round(score, precision)
+
+    def create_post(self, post_id, body, author='krguidedog'):
         comment = self.steem.commit.post(
-                title='guide puppy',
+                title='',
                 body=body,
-                author=self.config['guidedog']['account'],
+                author=author,
                 permlink=None,
                 reply_identifier=post_id,
                 json_metadata=None,
@@ -270,10 +270,11 @@ class GuideDog:
             if self.db.is_welcomed(post):
                 self.log.info('Skip request: already welcomed')
                 return
-            reputation = reputation(self.steem.get_account(supporter['account'])['reputation'])
-            if reputation > 50:
-                self.log.info('Skip request: reputation is too high (%s, %s) ' % (supporter['account'], reputation))
+            rep = self.reputation(self.steem.get_account(post['parent_author'])['reputation'])
+            if rep > 50:
+                self.log.info('Skip request: reputation is too high (%s, %s) ' % (post['parent_author'], rep))
                 return
+            self.log.info('Welcome %s (%s)!' % (post['parent_author'], rep))
             self.welcome(post)
         else:
             pass
@@ -416,7 +417,7 @@ class GuideDog:
             "<a href='/@easysteemit'><img src='https://steemitimages.com/DQmZmqw2L61Rrnvy92WAH5xSnn3Ud1ZcMJWWFcff141DPqV/daemoon.png'></a>"
         ]
         # Process
-        my_comment = self.create_post(post['parent_post_id'], '\n'.join(message))
+        my_comment = self.create_post(post['parent_post_id'], '\n'.join(message), 'easysteemit')
         self.db.store_welcome(post)
         self.supporters_vote(post['parent_author'], post['parent_permlink'], self.config['welcome_supporters'])
 
