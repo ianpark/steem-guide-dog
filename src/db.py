@@ -31,6 +31,7 @@ class DataStore:
     db_transfer = TinyDB('db/transfer_queue.json')
     db_resteem = TinyDB('db/resteem_queue.json')
     db_promote = TinyDB('db/promote.json')
+    db_welcome = TinyDB('db/welcome.json')
     
     mutex_post = Lock()
     mutex_vote = Lock()
@@ -97,6 +98,14 @@ class DataStore:
         self.mutex_main.release()
         return result
 
+    def is_welcomed(self, post):
+        self.mutex_main.acquire()
+        tbl = self.db_welcome
+        qry = Query()
+        result = tbl.contains((qry.author == post['parent_author']))
+        self.mutex_main.release()
+        return result
+
     def is_reported(self, post):
         self.mutex_main.acquire()
         tbl = self.db.table('reports')
@@ -160,6 +169,21 @@ class DataStore:
         })
         self.mutex_main.release()
         return True 
+
+    def store_welcome(self, post):
+        self.mutex_main.acquire()
+        self.db_welcome.insert({
+            'reporter': post['author'],
+            'author': post['parent_author'],
+            'permlink': post['parent_permlink'],
+            'comment_permlink': post['permlink'],
+            'report_time': datetime.now(),
+            'bot_signal': post['bot_signal'],
+            'processed': False
+        })
+        self.mutex_main.release()
+        return True 
+
 
     def add_user(self, user_id):
         user = self.db_user.table('user')

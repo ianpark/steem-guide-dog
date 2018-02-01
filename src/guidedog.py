@@ -4,6 +4,7 @@ import logging
 import random
 import time 
 import json
+import math
 from datetime import datetime, timedelta
 from steem import Steem
 from steem.post import Post
@@ -11,6 +12,15 @@ from time import sleep
 from publisher import Publisher
 
 sys_random = random.SystemRandom()
+
+def reputation(number, precision=2):
+    rep = int(number)
+    if rep == 0:
+        return 25
+    score = max([math.log10(abs(rep)) - 9, 0]) * 9 + 25
+    if rep < 0:
+        score = 50 - score
+    return round(score, precision)
 
 class GuideDog:
     log = logging.getLogger(__name__)
@@ -254,6 +264,17 @@ class GuideDog:
             else:
                 self.log.info('Not enough point! %s %s' % (post['author'], point))
                 self.send_no_point_alarm(post)
+        elif post['signal_type'] == 'welcome':
+            if post['author'] not in self.config["welcome_curator"]:
+                self.log.info('Skip request: Not allowed user')
+            if self.db.is_welcomed(post):
+                self.log.info('Skip request: already welcomed')
+                return
+            reputation = reputation(self.steem.get_account(supporter['account'])['reputation'])
+            if reputation > 50:
+                self.log.info('Skip request: reputation is too high (%s, %s) ' % (supporter['account'], reputation))
+                return
+            self.welcome(post)
         else:
             pass
 
@@ -383,6 +404,21 @@ class GuideDog:
         self.db.queue_push('resteem', {'post_id': post['parent_post_id'], 'resteemer': self.config['guidedog']['account']})
         self.supporters_vote(post['parent_author'], post['parent_permlink'], self.config['promotion_supporters'])
 
+    def welcome(self, post):
+        # Message
+        message = [
+            "## @%s님 스팀잇에 오신것을 환영합니다!" % post['parent_author'],
+            "스팀잇 정착을 도와드리기 위하여 @%s님의 부탁을 받고 찾아온 @easysteemit 입니다. 힘찬 출발을 응원하는 의미에서 @easysteemit 서포터 보팅을 해드립니다. 그리고 더 많은 분들에게 소개해 드리기 위해서 @krguidedog을 통해 @홍보해 드립니다." % post['author'],
+            "",
+            "### [이지스팀잇]",
+            "스팀잇은 처음에는 낮설고 잡해 보이지만, 필요한 것들을 하나하나 익히시고 나면 편리하고 즐겁게 즐기실 수 있어요. 이지스팀잇은 스팀잇을 사랑하는 분들이 마음을 한데 모아서 만든 스팀잇 안내서입니다. 스팀잇을 새로 시작하는 분들이 스팀잇을 더욱 편하게 접할 수 있도록 도와드릴것입니다.",
+            "",
+            "<a href='/@easysteemit'><img src='https://steemitimages.com/DQmZmqw2L61Rrnvy92WAH5xSnn3Ud1ZcMJWWFcff141DPqV/daemoon.png'></a>"
+        ]
+        # Process
+        my_comment = self.create_post(post['parent_post_id'], '\n'.join(message))
+        self.db.store_welcome(post)
+        self.supporters_vote(post['parent_author'], post['parent_permlink'], self.config['welcome_supporters'])
 
     def send_no_point_alarm(self, post):
         memo = '가이드독 포인트가 부족합니다. 스팸글 신고를 통해 포인트를 쌓아주세요. 자세한 정보는 저의 계정을 방문하셔서 최신 글을 읽어주세요.'

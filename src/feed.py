@@ -59,6 +59,12 @@ class Feed:
         self.executor = ThreadPoolExecutor(max_workers=1)
         self.instance = None
         self.run = False
+        self.signals = (
+            self.config['report_signals'] +
+            self.config['praise_signals'] +
+            self.config['promote_signals'] +
+            self.config['welcome_signals']
+        )
 
         keypath = os.path.expanduser(self.config['keyfile_path'])
         with open(keypath) as keyfile:
@@ -101,14 +107,14 @@ class Feed:
 
     def check_signal(self, plain_post):
         # Check signals in the body
-        for signal in self.config['report_signals'] + self.config['praise_signals'] + self.config['promote_signals']:
+        for signal in self.signals:
             # Match the first signal only
             if signal in plain_post.get('body',''):
                 return signal
         return None
 
     def is_valid(self, post):
-        if post['signal_type'] == 'praise' or post['signal_type'] == 'promote':
+        if post['signal_type'] == 'praise' or post['signal_type'] == 'promote' or post['signal_type'] == 'welcome':
             # Block self praise or self promotion
             if post['author'] == post['parent_author']:
                 self.log.info('Author and parent author is the same')
@@ -176,6 +182,8 @@ class Feed:
                 plain_post['signal_type'] = 'praise'
             elif plain_post['bot_signal'] in self.config['promote_signals']:
                 plain_post['signal_type'] = 'promote'
+            elif plain_post['bot_signal'] in self.config['welcome_signals']:
+                plain_post['signal_type'] = 'welcome'
             else:
                 plain_post['signal_type'] = 'unknown'
             if not self.is_valid(plain_post):

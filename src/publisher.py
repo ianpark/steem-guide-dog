@@ -81,14 +81,15 @@ class Publisher:
             self.db.add_point(item['name'], point, start_date)
             self.db.update_point(item['name'])
             new_point = self.db.get_point(item['name'])
-            reporter_table.append('@%s %s | %s | %s | %s' % (
-                item['name'],
-                medals[idx] if idx < len(medals) else '',
-                item['count'],
-                point,
-                new_point['earned'] - new_point['used']
+            if (new_point['earned'] - new_point['used']) > 0:
+                reporter_table.append('@%s %s | %s | %s | %s' % (
+                    item['name'],
+                    medals[idx] if idx < len(medals) else '',
+                    item['count'],
+                    point,
+                    new_point['earned'] - new_point['used']
+                    )
                 )
-            )
 
         spammer_rank = self.get_spammer_rank(records)
         spammer_table = ['계정 | 횟수', '---  | ---']
