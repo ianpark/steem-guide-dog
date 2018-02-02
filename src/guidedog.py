@@ -414,7 +414,7 @@ class GuideDog:
             "### [이지스팀잇]",
             "스팀잇은 처음에는 낮설고 잡해 보이지만, 필요한 것들을 하나하나 익히시고 나면 편리하고 즐겁게 즐기실 수 있어요. 이지스팀잇은 스팀잇을 사랑하는 분들이 마음을 한데 모아서 만든 스팀잇 안내서입니다. 스팀잇을 새로 시작하는 분들이 스팀잇을 더욱 편하게 접할 수 있도록 도와드릴것입니다.",
             "",
-            "<a href='/@easysteemit'><img src='https://steemitimages.com/DQmZmqw2L61Rrnvy92WAH5xSnn3Ud1ZcMJWWFcff141DPqV/daemoon.png'></a>"
+            "<a href='/@easysteemit'><img src='https://steemitimages.com/300x0/https://steemitimages.com/DQmZmqw2L61Rrnvy92WAH5xSnn3Ud1ZcMJWWFcff141DPqV/daemoon.png'></a>"
         ]
         # Process
         my_comment = self.create_post(post['parent_post_id'], '\n'.join(message), 'easysteemit')
@@ -422,5 +422,5 @@ class GuideDog:
         self.supporters_vote(post['parent_author'], post['parent_permlink'], self.config['welcome_supporters'])
 
     def send_no_point_alarm(self, post):
-        memo = '가이드독 포인트가 부족합니다. 스팸글 신고를 통해 포인트를 쌓아주세요. 자세한 정보는 저의 계정을 방문하셔서 최신 글을 읽어주세요.'
+        memo = '가이드독 포인트가 부족합니다. 스팸글 신고를 통해 포인트를 쌓아주세요. 자세한 정보는 다음 링크에서 확인해 주세요. https://steemit.com/kr/@asbear/33kqka-kr'
         self.db.queue_push('transfer', {'send_to': post['author'], 'amount': 0.001, 'memo': memo})

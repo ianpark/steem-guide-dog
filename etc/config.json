@@ -165,10 +165,10 @@
         "copyright_file": "etc/copyright.txt"
     },
     "praise_curator": ["asbear", "abdullar", "sochul"],
-    "promote_curator": ["asbear", "abdullar", "sochul", "feyee95", "sjchoi", "happyberrysboy", 
+    "promote_curator": ["asbear", "abdullar", "sochul", "feyee95", "sjchoi", "happyberrysboy", "noctisk",
                         "joeuhw", "beajinsu", "mastertri", "coffeenut", "umkin", "bree1042",
                         "floridasnail", "segyepark", "julianpark", "jjangh1717", "dayoung", "easysteemit"],
-    "welcome_curator": ["asbear", "woo7739", "carrotcake", "forhappywomen", "segyepark", "twinbraid", "familydoctor"],    
+    "welcome_curator": ["asbear", "woo7739", "carrotcake", "forhappywomen", "segyepark", "twinbraid", "familydoctor", "bramd", "xinnong"],
     "whitelist": [],
     "blacklist": ["jordbruk", "newbieji1", "rashley01"],
     "reward": {
