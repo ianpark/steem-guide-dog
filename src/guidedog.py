@@ -408,11 +408,11 @@ class GuideDog:
     def welcome(self, post):
         # Message
         message = [
-            "## @%s님 스팀잇에 오신것을 환영합니다!" % post['parent_author'],
-            "스팀잇 정착을 도와드리기 위하여 @%s님의 부탁을 받고 찾아온 @easysteemit 입니다. 힘찬 출발을 응원하는 의미에서 @easysteemit 서포터 보팅을 해드립니다. 그리고 더 많은 분들에게 소개해 드리기 위해서 @krguidedog을 통해 @홍보해 드립니다." % post['author'],
+            "### @%s님 스팀잇에 오신것을 환영합니다!" % post['parent_author'],
+            "스팀잇 정착을 도와드리기 위하여 @%s님의 부탁을 받고 찾아온 @easysteemit 입니다. 힘찬 출발을 응원하는 의미로 서포터 보팅을 해드립니다. 그리고 더 많은 분들에게 소개해 드리기 위해서 @krguidedog을 통해 @홍보해 드립니다." % post['author'],
             "",
             "### [이지스팀잇]",
-            "스팀잇은 처음에는 낮설고 잡해 보이지만, 필요한 것들을 하나하나 익히시고 나면 편리하고 즐겁게 즐기실 수 있어요. 이지스팀잇은 스팀잇을 사랑하는 분들이 마음을 한데 모아서 만든 스팀잇 안내서입니다. 스팀잇을 새로 시작하는 분들이 스팀잇을 더욱 편하게 접할 수 있도록 도와드릴것입니다.",
+            "@easysteemit은 처음에는 낮설고 복잡해 보일수 있는 스팀잇을 더욱 쉽게 접할수 있도록 만들어진 스팀잇 안내서입니다. @easysteemit 을 팔로우하시고 필요한 것들을 하나하나 익혀보세요! 스팀잇 활동이 더욱 더 즐거워질거에요 :)",
             "",
             "<a href='/@easysteemit'><img src='https://steemitimages.com/300x0/https://steemitimages.com/DQmZmqw2L61Rrnvy92WAH5xSnn3Ud1ZcMJWWFcff141DPqV/daemoon.png'></a>"
         ]

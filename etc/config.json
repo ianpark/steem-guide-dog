@@ -46,6 +46,16 @@
             "account": "dayoung",
             "weight": 50,
             "voteOver": 8000
+        },
+        {
+            "account": "extrashin",
+            "weight": 20,
+            "voteOver": 8500
+        },
+        {
+            "account": "julianpark",
+            "weight": 15,
+            "voteOver": 7500
         }
     ],
     "welcome_supporters": [
@@ -166,7 +176,7 @@
     },
     "praise_curator": ["asbear", "abdullar", "sochul"],
     "promote_curator": ["asbear", "abdullar", "sochul", "feyee95", "sjchoi", "happyberrysboy", "noctisk",
-                        "joeuhw", "beajinsu", "mastertri", "coffeenut", "umkin", "bree1042",
+                        "joeuhw", "beajinsu", "mastertri", "coffeenut", "umkin", "bree1042", "extrashin",
                         "floridasnail", "segyepark", "julianpark", "jjangh1717", "dayoung", "easysteemit"],
     "welcome_curator": ["asbear", "woo7739", "carrotcake", "forhappywomen", "segyepark", "twinbraid", "familydoctor", "bramd", "xinnong"],
     "whitelist": [],
