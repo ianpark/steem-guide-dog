@@ -158,11 +158,11 @@ class GuideDog:
                 comment = self.steem.commit.post(
                     title=result['title'],
                     body=result['body'],
-                    author='asbear',
+                    author='krguidedog',
                     permlink=str(uuid.uuid4()),
                     reply_identifier=None,
                     json_metadata=None,
-                    comment_options=comment_options,
+                    comment_options=None,
                     community=None,
                     tags='kr krguidedog antispam',
                     beneficiaries=None,

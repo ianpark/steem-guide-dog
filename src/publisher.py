@@ -100,7 +100,7 @@ class Publisher:
        
         title = '🐶 %s 가이드독 스팸신고 활동 보고드립니다 (KR Guidedog\'s war on spam)' % period
         cont = ['<center>https://steemitimages.com/DQmQJySGPCWWhtS9Gw2aoR9pa3n43XCN5yvmKMwVWBk8Eym/Screen%20Shot%202017-10-11%20at%2023.25.25.png</center>',
-                '안녕하세요? @asbear입니다. %s의 KR가이드독 활동 내역을 보고드립니다.' % md,
+                '안녕하세요? @krguidedog입니다. %s의 KR가이드독 활동 내역을 보고드립니다.' % md,
                 '',
                 '%s에는 %s분께서 %s개의 스팸 글을 신고해 주셨습니다. %s명의 스패머들에게는 kr가이드독이 '
                 '개발에 땀나도록 달려가서 kr 커뮤니티와 소통하는 방법에 대하여 친절하게 설명해 '
@@ -170,6 +170,8 @@ class Publisher:
                 '이 글에 **보팅**해 주시면 가이드독의 활동에 **큰힘**이 됩니다!',
                 '---',
                 '이 프로젝트는 @abdullar 님과 @sochul님의 스팀파워 임대로 운영 되고 있습니다.'
+                '---',
+                'Created by @asbear'
         ]
         return {'reporter': reporter_table,
                 'spammer': spammer_table,

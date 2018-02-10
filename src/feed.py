@@ -135,20 +135,6 @@ class Feed:
         return True
 
     def handle_data(self, plain_post):
-        post = Post(plain_post)
-        """
-        try:
-            if post.get('depth', 0) == 0:
-                if post['author'] == 'loteem':
-                    post_id = '@%s/%s' % (post['author'], post['permlink'])
-                    self.steem.commit.vote(post_id, 5, 'asbear')
-                    self.steem.commit.vote(post_id, 5, 'krguidedog')
-                    self.log.info('Loteem found!')
-                return
-        except:
-            self.log.info('Loteem found but failed to vote!')
-            pass
-        """
         # Skip long comments
         if len(plain_post.get('body','')) > 1024:
             return
@@ -157,6 +143,7 @@ class Feed:
         if not signal_found:
             return
 
+        post = Post(plain_post)
         # Skip comments of which depth is not 1
         if post.get('depth', 0) != 1:
             return
