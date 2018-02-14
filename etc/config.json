@@ -5,7 +5,7 @@
     "spam_supporters": [
         {
             "account": "asbear",
-            "weight": 10,
+            "weight": 7,
             "voteOver": 3000
         }
     ],
