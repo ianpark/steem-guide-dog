@@ -9,6 +9,13 @@
             "voteOver": 3000
         }
     ],
+    "spam_downvoters": [
+        {
+            "account": "asbear",
+            "weight": -7,
+            "voteOver": 3000
+        }
+    ],
     "praise_supporters": [
     ],
     "promotion_supporters": [
@@ -72,12 +79,6 @@
     "guidedog": {
         "account": "krguidedog",
         "nickname": "KR Guide Dog",
-        "photo": [
-            "http://i.imgur.com/ikEQBTz.jpg",
-            "http://i.imgur.com/E0FuVhq.jpg",
-            "http://i.imgur.com/Cx4HH05.jpg",
-            "http://i.imgur.com/l2z8MHm.jpg"
-        ],
         "pets": [
             {
                 "name": "개사원",
@@ -171,8 +172,24 @@
                 ]
             }
         ],
-        "message_file": "etc/greeting.txt",
-        "copyright_file": "etc/copyright.txt"
+        "copyright_file": "resource/copyright.txt",
+
+
+        "mild_warning_file": "resource/warning1.txt",
+        "moderate_warning_file": "resource/warning2.txt",
+        "hard_warning_file": "resource/warning3.txt",
+        "mild_photo": [
+            "http://i.imgur.com/ikEQBTz.jpg",
+            "http://i.imgur.com/E0FuVhq.jpg",
+            "http://i.imgur.com/Cx4HH05.jpg",
+            "http://i.imgur.com/l2z8MHm.jpg"
+        ],
+        "moderate_photo": [
+            "https://i.imgur.com/jT8ydVX.jpg"
+        ],
+        "hard_photo": [
+            "https://i.imgur.com/jT8ydVX.jpg"
+        ]
     },
     "praise_curator": ["asbear", "abdullar", "sochul"],
     "promote_curator": ["asbear", "abdullar", "sochul", "feyee95", "sjchoi", "happyberrysboy", "noctisk",
@@ -181,6 +198,7 @@
     "welcome_curator": ["asbear", "woo7739", "carrotcake", "forhappywomen", "segyepark", "twinbraid", "familydoctor", "bramd", "xinnong"],
     "whitelist": [],
     "blacklist": ["jordbruk", "newbieji1", "rashley01", "syjk96", "coin104"],
+
     "reward": {
         "medals" : [
             "http://i.imgur.com/hv0zL8U.png",

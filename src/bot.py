@@ -31,7 +31,7 @@ class Bot:
         self.queue = deque()
         self.db = DataStore()
         self.feed = Feed(self.config, self.db)
-        self.guidedog = GuideDog(self.config, self.db)
+        self.guideDog = GuideDog(self.config, self.db)
         self.data = Data()
         self.run_flag = True
         self.refresh_data_cache()
@@ -48,7 +48,7 @@ class Bot:
         while self.run_flag:
             # Poll the queue every second
             await asyncio.sleep(3)
-            self.guidedog.work()
+            self.guideDog.work()
         self.feed.stop()
 
     def run(self):

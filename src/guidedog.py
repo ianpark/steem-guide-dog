@@ -13,21 +13,28 @@ from publisher import Publisher
 
 sys_random = random.SystemRandom()
 
+
+def readFile(file_path):
+    with open(file_path) as f:
+        message = f.readlines()
+        return [x.strip() for x in message]
+
 class GuideDog:
     log = logging.getLogger(__name__)
+
     def __init__(self, config, db):
         self.config = config
         self.db = db
         keypath = os.path.expanduser(self.config['keyfile_path'])
-        with open(keypath) as keyfile:    
-            keyfile_json = json.load(keyfile)
-            self.steem = Steem(keys=keyfile_json['krguidedog'])
-        with open(self.config['guidedog']['message_file']) as f:
-            message = f.readlines()
-            self.message = [x.strip() for x in message]
-        with open(self.config['guidedog']['copyright_file']) as f:
-            message = f.readlines()
-            self.copyright = [x.strip() for x in message]
+        with open(keypath) as key_file:
+            key_file_json = json.load(key_file)
+            self.steem = Steem(keys=key_file_json['krguidedog'])
+
+        self.message1 = readFile(self.config['guidedog']['mild_warning_file'])
+        self.message2 = readFile(self.config['guidedog']['moderate_warning_file'])
+        self.message3 = readFile(self.config['guidedog']['hard_warning_file'])
+        self.copyright = readFile(self.config['guidedog']['copyright_file'])
+
         self.last_daily_report = None
         self.daily_report_generator = Publisher(self.db)
         self.daily_report_timestamp = None
@@ -68,37 +75,6 @@ class GuideDog:
                 limit -= 1
                 if limit == 0:
                     raise 'Posting check failure'
-
-    def try_staking(self):
-        try:
-          if self.steem.get_account('asbear')['voting_power'] > 9000:
-            comment = self.steem.commit.post(
-                 title='guidedog public fund',
-                 body="guidedog antispam service: public fund raising for spam reporters",
-                 author=self.config['guidedog']['account'],
-                 permlink=None,
-                 reply_identifier=sys_random.choice(["@krguidedog/kr-2017-8-31",
-                                                   "@krguidedog/kr-2017-9-1",
-                                                   "@krguidedog/kr-2017-9-2",
-                                                   "@krguidedog/kr-2017-9-3",
-                                                   "@krguidedog/kr-2017-9-4",
-                                                   "@krguidedog/kr-2017-9-5",
-                                                   "@krguidedog/kr-2017-9-6",
-                                                   "@krguidedog/kr-2017-9-7"]),
-                 json_metadata=None,
-                 comment_options=None,
-                 community=None,
-                 tags=None,
-                 beneficiaries=None,
-                 self_vote=False
-            )
-            self.log.info('Staking vote..')
-            post = comment['operations'][0][1]
-            post_id = '@%s/%s' % (post['author'], post['permlink'])
-            self.steem.commit.vote(post_id, 100, 'asbear')
-        except Exception as e:
-            self.log.info('Staking failed' + str(e))
-            pass
 
     def vote(self, post_id, power, voter):
         try:
@@ -270,6 +246,7 @@ class GuideDog:
             if self.db.is_welcomed(post):
                 self.log.info('Skip request: already welcomed')
                 return
+
             rep = self.reputation(self.steem.get_account(post['parent_author'])['reputation'])
             if rep > 50:
                 self.log.info('Skip request: reputation is too high (%s, %s) ' % (post['parent_author'], rep))
@@ -279,7 +256,7 @@ class GuideDog:
         else:
             pass
 
-    def generate_warning_message(self,post):
+    def generate_warning_message(self, post):
         if post['bot_signal'] == "@저작권안내":
             greet = ('저작권 안내입니다.' if post['reported_count'] <= 1
                     else '%s 번째 안내입니다.' % post['reported_count'])
@@ -289,14 +266,29 @@ class GuideDog:
             lines.extend(self.copyright)
             return '\n'.join(lines)
         else:
-            greet = ('Nice to meet you!' if post['reported_count'] <= 1
-                    else 'We have met %s times already!' % post['reported_count'])
-            lines = [sys_random.choice(self.config['guidedog']['photo']),
-                    '## Woff, woff!',
-                    '#### Hello @%s, %s' % (post['parent_author'], greet)
-                    ]
-            lines.extend(self.message)
-            return '\n'.join(lines)
+            if post['reported_count'] <= 5:
+                greet = ('Nice to meet you!' if post['reported_count'] <= 1
+                        else 'We have met %s times already!' % post['reported_count'])
+                lines = [sys_random.choice(self.config['guidedog']['mild_photo']),
+                        '## Woff, woff!',
+                        '#### Hello @%s, %s' % (post['parent_author'], greet)
+                        ]
+                lines.extend(self.message1)
+                return '\n'.join(lines)
+            elif post['reported_count'] <= 10:
+                greet = ('We have met %s times already!' % post['reported_count'])
+                lines = [sys_random.choice(self.config['guidedog']['moderate_photo']),
+                        '#### Hello @%s, %s' % (post['parent_author'], greet)
+                        ]
+                lines.extend(self.message2)
+                return '\n'.join(lines)
+            else:
+                greet = ('We have met %s times already!' % post['reported_count'])
+                lines = [sys_random.choice(self.config['guidedog']['hard_photo']),
+                        '#### Hey @%s, %s' % (post['parent_author'], greet)
+                        ]
+                lines.extend(self.message3)
+                return '\n'.join(lines)
 
     def vote_on_post(self, post, supporters):
         post = post['operations'][0][1]
@@ -325,6 +317,8 @@ class GuideDog:
         my_comment = self.create_post(post['parent_post_id'], self.generate_warning_message(post))
         self.db.store_report(post)
         self.vote_on_post(my_comment, self.config['spam_supporters'])
+        if post['reported_count'] > 10:
+            self.supporters_vote(post['parent_author'], post['parent_permlink'], self.config['spam_downvoters'])
 
     def generate_benefit_message(self, post):
         reward = "0.6 STEEM"
