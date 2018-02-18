@@ -152,7 +152,7 @@ class Publisher:
                 '### 특별히 구성된 가이드독 드림팀입니다',
                 '<table><tr><td>http://i.imgur.com/7KVQf6i.jpg</td><td>http://i.imgur.com/pIqqVbm.png</td><td>http://i.imgur.com/Ft0qXcQ.png</td><td>http://i.imgur.com/oACf3Af.png</td><td>http://i.imgur.com/U6KILpr.png</td></tr><tr><td>개대리</td><td>개수습</td><td>개과장</td><td>개부장</td><td>개사원</td></tr></table>',
                 '<table><tr><td>https://i.imgur.com/cGjDwLm.jpg</td><td>https://i.imgur.com/7zJDCee.jpg</td><td>https://i.imgur.com/G1VozdT.jpg</td><td>https://i.imgur.com/IhQNvMb.jpg</td><td>https://i.imgur.com/JZaU4tB.jpg</td></tr><tr><td>깜지</td><td>여름이</td><td>하니</td><td>써니</td><td>아리</td></tr></table>',
-                '<table><tr><td>https://i.imgur.com/Di1kBXp.png</td><td>https://i.imgur.com/zla5JVW.jpg</td><td>https://i.imgur.com/tJJnC3W.jpg </td><td></td><td></td></tr><tr><td>킹</td><td>별이</td><td>겨울이</td><td>----------------</td><td>----------------</td></tr></table>',
+                '<table><tr><td>https://i.imgur.com/Di1kBXp.png</td><td>https://i.imgur.com/zla5JVW.jpg</td><td>https://i.imgur.com/tJJnC3W.jpg </td><td>https://i.imgur.com/7gzQiQ8.jpg</td><td></td></tr><tr><td>킹</td><td>별이</td><td>겨울이</td><td>모찌</td><td>----------------</td></tr></table>',
                 '',
                 '## 오늘의 히어로즈',
                 '스팸글 신고는 귀찮고 시간도 잡아먹는 일입니다. 공익을 위한 이분들의 노력에'

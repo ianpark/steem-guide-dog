@@ -5,15 +5,25 @@
     "spam_supporters": [
         {
             "account": "asbear",
-            "weight": 7,
+            "weight": 5,
             "voteOver": 3000
         }
     ],
     "spam_downvoters": [
         {
             "account": "asbear",
-            "weight": -7,
+            "weight": -5,
             "voteOver": 3000
+        },
+        {
+            "account": "joeuhw",
+            "weight": -15,
+            "voteOver": 9000
+        },
+        {
+            "account": "noctisk",
+            "weight": -5,
+            "voteOver": 5000
         }
     ],
     "praise_supporters": [
@@ -61,8 +71,8 @@
         },
         {
             "account": "julianpark",
-            "weight": 15,
-            "voteOver": 7500
+            "weight": 70,
+            "voteOver": 9200
         }
     ],
     "welcome_supporters": [
@@ -170,6 +180,14 @@
                     "https://i.imgur.com/CraAs9J.jpg",
                     "https://i.imgur.com/zla5JVW.jpg"
                 ]
+            },
+            {
+                "name": "모찌",
+                "parent": "@indygu2015",
+                "photo": [
+                    "https://i.imgur.com/7gzQiQ8.jpg",
+                    "https://i.imgur.com/qaDnzTD.jpg"
+                ]
             }
         ],
         "copyright_file": "resource/copyright.txt",
@@ -188,7 +206,7 @@
             "https://i.imgur.com/jT8ydVX.jpg"
         ],
         "hard_photo": [
-            "https://i.imgur.com/jT8ydVX.jpg"
+            "https://i.imgur.com/yS5E0sm.jpg"
         ]
     },
     "praise_curator": ["asbear", "abdullar", "sochul"],
@@ -197,7 +215,7 @@
                         "floridasnail", "segyepark", "julianpark", "jjangh1717", "dayoung", "easysteemit"],
     "welcome_curator": ["asbear", "woo7739", "carrotcake", "forhappywomen", "segyepark", "twinbraid", "familydoctor", "bramd", "xinnong"],
     "whitelist": [],
-    "blacklist": ["jordbruk", "newbieji1", "rashley01", "syjk96", "coin104"],
+    "blacklist": ["jordbruk", "newbieji1", "rashley01", "syjk96", "coin104", "gunner4108", "gunner4107", "hyunlee1999", "scholarships"],
 
     "reward": {
         "medals" : [
