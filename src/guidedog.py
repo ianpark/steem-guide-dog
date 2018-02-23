@@ -208,8 +208,14 @@ class GuideDog:
             if self.db.is_reported(post):
                 self.log.info('Skip request: already reported')
                 return
+            rep = self.reputation(self.steem.get_account(post['author'])['reputation'])
+            if rep < 35:
+                self.log.info('Skip request: reputation is too low (%s, %s) ' % (post['author'], rep))
+                return
+
             post['reported_count'] = self.db.get_reported_count(post['parent_author'])
             self.process_spam(post)
+
         elif post['signal_type'] == 'praise':
             if self.db.is_already_consumed_comment(post):
                 self.log.info('Skip request: already consumed comment')
@@ -224,7 +230,7 @@ class GuideDog:
                 self.db.use_point(post['author'], 1)
             else:
                 self.log.info('Not enough point! %s %s' % (post['author'], point))
-                self.send_no_point_alarm(post)
+                # self.send_no_point_alarm(post)
         elif post['signal_type'] == 'promote':
             if self.db.is_promoted(post):
                 self.log.info('Skip request: already promoted')
