@@ -32,15 +32,7 @@ class Bot:
         self.db = DataStore()
         self.feed = Feed(self.config, self.db)
         self.guideDog = GuideDog(self.config, self.db)
-        self.data = Data()
         self.run_flag = True
-        self.refresh_data_cache()
-        # self.executor.submit(run_webapp, self.config, self.data)
-    
-    def refresh_data_cache(self):
-        # Update the data storage
-        self.data.reports = self.db.read_all(datetime.now().timestamp() - 60 * 60 * 72)
-        self.data.users = self.db.get_all_user()
 
     async def work(self):
         self.log.info('Start Bot')

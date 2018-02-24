@@ -53,7 +53,7 @@ class DataStore:
         try:
             eval('self.db_' + type).insert({
                 'data': data,
-                'time': datetime.now(),
+                'time': str(datetime.now()),
                 'state': 'pending'
             })
         finally:
@@ -133,7 +133,7 @@ class DataStore:
             'author': post['parent_author'],
             'permlink': post['parent_permlink'],
             'comment_permlink': post['permlink'],
-            'report_time': datetime.now(),
+            'report_time': str(datetime.now()),
             'bot_signal': post['bot_signal']
         })
         self.add_user(post['author'])
@@ -149,7 +149,7 @@ class DataStore:
             'author': post['parent_author'],
             'permlink': post['parent_permlink'],
             'comment_permlink': post['permlink'],
-            'report_time': datetime.now(),
+            'report_time': str(datetime.now()),
             'bot_signal': post['bot_signal'],
             'processed': False
         })
@@ -163,7 +163,7 @@ class DataStore:
             'author': post['parent_author'],
             'permlink': post['parent_permlink'],
             'comment_permlink': post['permlink'],
-            'report_time': datetime.now(),
+            'report_time': str(datetime.now()),
             'bot_signal': post['bot_signal'],
             'processed': False
         })
@@ -177,7 +177,7 @@ class DataStore:
             'author': post['parent_author'],
             'permlink': post['parent_permlink'],
             'comment_permlink': post['permlink'],
-            'report_time': datetime.now(),
+            'report_time': str(datetime.now()),
             'bot_signal': post['bot_signal'],
             'processed': False
         })
@@ -275,7 +275,7 @@ class DataStore:
         reports.insert({
             'user_id': user_id, 
             'amount': amount, 
-            'date': datetime.now().strftime('%d %b %Y')
+            'date': str(datetime.now().strftime('%d %b %Y'))
             })
         self.update_point(user_id)
         self.mutex_main.release()
