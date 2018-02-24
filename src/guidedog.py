@@ -249,6 +249,7 @@ class GuideDog:
         elif post['signal_type'] == 'welcome':
             if post['author'] not in self.config["welcome_curator"]:
                 self.log.info('Skip request: Not allowed user')
+                return
             if self.db.is_welcomed(post):
                 self.log.info('Skip request: already welcomed')
                 return
