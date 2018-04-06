@@ -4,21 +4,16 @@
     "tag_prefix": "kr-",
     "spam_supporters": [
         {
-            "account": "asbear",
-            "weight": 5,
+            "account": "krguidedog",
+            "weight": 30,
             "voteOver": 3000
         }
     ],
     "spam_downvoters": [
         {
-            "account": "asbear",
+            "account": "krguidedog",
             "weight": -5,
             "voteOver": 3000
-        },
-        {
-            "account": "joeuhw",
-            "weight": -5,
-            "voteOver": 9000
         },
         {
             "account": "noctisk",
@@ -31,13 +26,8 @@
     "promotion_supporters": [
         {
             "account": "asbear",
-            "weight": 10,
-            "voteOver": 3000
-        },
-        {
-            "account": "krguidedog",
-            "weight": 50,
-            "voteOver": 3000
+            "weight": 100,
+            "voteOver": 2000
         },
         {
             "account": "feyee95",
@@ -53,11 +43,6 @@
             "account": "happyberrysboy",
             "weight": 10,
             "voteOver": 7000
-        },
-        {
-            "account": "joeuhw",
-            "weight": 15,
-            "voteOver": 9000
         },
         {
             "account": "dayoung",
@@ -210,12 +195,11 @@
         ]
     },
     "praise_curator": ["asbear", "abdullar", "sochul"],
-    "promote_curator": ["asbear", "abdullar", "sochul", "feyee95", "sjchoi", "happyberrysboy", "noctisk",
-                        "joeuhw", "beajinsu", "mastertri", "coffeenut", "umkin", "bree1042", "extrashin",
+    "promote_curator": ["asbear", "feyee95", "sjchoi", "happyberrysboy", "noctisk", "beajinsu", "mastertri", "coffeenut", "umkin", "bree1042", "extrashin",
                         "floridasnail", "segyepark", "julianpark", "jjangh1717", "dayoung", "easysteemit"],
     "welcome_curator": ["asbear", "woo7739", "carrotcake", "forhappywomen", "segyepark", "twinbraid", "familydoctor", "bramd", "xinnong"],
     "whitelist": [],
-    "blacklist": ["jordbruk", "newbieji1", "rashley01", "syjk96", "coin104", "gunner4108", "gunner4107", "hyunlee1999", "scholarships", "deadfrost", "cororenny", "fishmaniac", "reinaandrea", "trebolcoins", "jillare", "emlewi", "rollingjk", "edunoguer", "castiel20", "frost217", "seoulguy", "tinyspace", "badukgo", "madyinlay", "korealove", "jakebar", "luiarra"],
+    "blacklist": ["jordbruk", "newbieji1", "rashley01", "syjk96", "coin104", "gunner4108", "gunner4107", "hyunlee1999", "scholarships", "deadfrost", "cororenny", "fishmaniac", "reinaandrea", "trebolcoins", "jillare", "emlewi", "rollingjk", "edunoguer", "castiel20", "frost217", "seoulguy", "tinyspace", "badukgo", "madyinlay", "korealove", "jakebar", "luiarra","mukstagram","greatstory"],
 
     "reward": {
         "medals" : [

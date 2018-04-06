@@ -37,14 +37,15 @@ class Publisher:
         all_user = ['아이디 | 신고수 | 포인트(총/잔여)',
                     '--- | --- | ---']
         for user in users:
-            if user['point_earned'] == 0:
+            remaining_point = user['point_earned'] - user['point_used']
+            if remaining_point == 0:
                 continue
             all_user.append(
                 '@%s | %s | %s / %s' % (
                     user['user_id'],
                     user['report_count'],
                     user['point_earned'],
-                    user['point_earned'] - user['point_used']
+                    remaining_point
                 )
             )
         return all_user
@@ -134,16 +135,16 @@ class Publisher:
                 '',
                 '## 가이드독 포인트 사용법',
                 '### 칭찬해',
-                '- 글에 @칭찬해가 포함된 댓글을 달면, 가이드독이 와서 칭찬댓글과 0.6 STEEM 을 선물합니다.',
+                '- 글에 @칭찬해가 포함된 댓글을 달면, 가이드독이 와서 칭찬댓글과 0.4 SBD 을 선물합니다.',
                 '- 1 포인트 사용됩니다.',
                 '### 축하해',
-                '- 글에 @축하해가 포함된 댓글을 달면, 가이드독이 와서 축하댓글과 0.6 STEEM 을 선물합니다.',
+                '- 글에 @축하해가 포함된 댓글을 달면, 가이드독이 와서 축하댓글과 0.4 SBD 을 선물합니다.',
                 '- 1 포인트 사용됩니다.',
                 '### 감사해',
-                '- 글에 @감사해가 포함된 댓글을 달면, 가이드독이 와서 감사댓글과 0.6 STEEM 을 선물합니다.',
+                '- 글에 @감사해가 포함된 댓글을 달면, 가이드독이 와서 감사댓글과 0.4 SBD 을 선물합니다.',
                 '- 1 포인트 사용됩니다.',
                 '### 위로해',
-                '- 글에 @위로해가 포함된 댓글을 달면, 가이드독이 와서 감사댓글과 0.6 STEEM 을 선물합니다.',
+                '- 글에 @위로해가 포함된 댓글을 달면, 가이드독이 와서 감사댓글과 0.4 SBD 을 선물합니다.',
                 '- 1 포인트 사용됩니다.',
                 '### 홍보해',
                 '- 글에 @홍보해가 포함된 댓글을 달면, 가이드독이 와서 보팅과 함께 리스팀을 해 줍니다. 한 글에는 한번만 동작합니다. 리스팀이 되는것을 감안하여 정말 좋은 글에만 사용 해 주세요.',
@@ -173,9 +174,7 @@ class Publisher:
                 '오늘도 kr 커뮤니티를 위해 노력해주신 분들께 깊은 감사를 드립니다.',
                 '이 글에 **보팅**해 주시면 가이드독의 활동에 **큰힘**이 됩니다!',
                 '---',
-                '이 프로젝트는 @abdullar 님과 @sochul님의 스팀파워 임대로 운영 되고 있습니다.'
-                '---',
-                'Created by @asbear'
+                'Created and operated by @asbear'
         ]
         return {'reporter': reporter_table,
                 'spammer': spammer_table,

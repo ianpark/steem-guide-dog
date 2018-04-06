@@ -5,6 +5,7 @@ import random
 import time 
 import json
 import math
+import sys, traceback
 from datetime import datetime, timedelta
 from steem import Steem
 from steem.post import Post
@@ -38,6 +39,8 @@ class GuideDog:
         self.last_daily_report = None
         self.daily_report_generator = Publisher(self.db)
         self.daily_report_timestamp = None
+    def claim_reward(self):
+        self.steem.claim_reward_balance(account = 'krguidedog')
 
     def reputation(self, number, precision=2):
         rep = int(number)
@@ -89,7 +92,7 @@ class GuideDog:
             self.steem.commit.transfer(
                 to=send_to,
                 amount=amount,
-                asset='STEEM',
+                asset='SBD',
                 account=self.config['guidedog']['account'],
                 memo=memo)
             self.log.info('Transferred %s to %s: %s' % (amount, send_to, memo))
@@ -151,6 +154,7 @@ class GuideDog:
         except Exception as e:
             self.log.info(e)
             self.log.info('Failed to create a daily report for ' + newday.strftime("%d %b %Y"))
+            #traceback.print_exc(file=sys.stdout)
             return
 
     def work(self):
@@ -200,7 +204,7 @@ class GuideDog:
 
         self.daily_report()
         # Prevent wasting the donated funds
-        # self.try_staking()
+        #self.claim_reward()
 
     def handle_post(self, post):
         self.log.info("New Command [%s -> %s -> %s] : %s" % (post['author'], post['bot_signal'], post['parent_author'], post))
@@ -328,7 +332,7 @@ class GuideDog:
             self.supporters_vote(post['parent_author'], post['parent_permlink'], self.config['spam_downvoters'])
 
     def generate_benefit_message(self, post):
-        reward = "0.6 STEEM"
+        reward = "0.4 SBD"
         rt = ['멋진', '섹시한', '훈훈한', '시크한', '알흠다운', '황홀한', '끝내주는', '요염한',
         '흥분되는', '짱재밌는', '잊지못할', '감동적인', '배꼽잡는', '러블리한', '쏘쿨한', '분위기있는']
         pet = sys_random.choice(self.config['guidedog']['pets'])
@@ -395,7 +399,7 @@ class GuideDog:
 
         # Push transfer to queue
         self.db.queue_push('transfer', {'send_to': post['parent_author'],
-            'amount': 0.6,
+            'amount': 0.4,
             'memo': '@%s 님께서 가이드독 활동을 통해 모은 포인트로 감사의 표시를 하였습니다.'
             '해당 글을 확인해 주세요! https://steemit.com/%s' % (post['author'], post['parent_post_id']) })
 

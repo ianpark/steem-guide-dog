@@ -1,11 +1,14 @@
 import json
 import logging
+import time
+import timestring
 from tinydb import TinyDB, Query, where
 from tinydb.operations import increment
 from datetime import datetime
 from pytz import timezone
 
 from threading import Thread, Lock
+from functools import partial
 
 KR = timezone('Asia/Seoul')
 
@@ -17,6 +20,9 @@ Table: reports
     report_time : string
     bot_signal  : string
 """
+
+def to_timestamp(dt):
+    return time.mktime(dt.timetuple())
 
 class DataStore:
     """ 
@@ -53,7 +59,7 @@ class DataStore:
         try:
             eval('self.db_' + type).insert({
                 'data': data,
-                'time': str(datetime.now()),
+                'time': to_timestamp(datetime.now()),
                 'state': 'pending'
             })
         finally:
@@ -133,7 +139,7 @@ class DataStore:
             'author': post['parent_author'],
             'permlink': post['parent_permlink'],
             'comment_permlink': post['permlink'],
-            'report_time': str(datetime.now()),
+            'report_time': to_timestamp(datetime.now()),
             'bot_signal': post['bot_signal']
         })
         self.add_user(post['author'])
@@ -149,7 +155,7 @@ class DataStore:
             'author': post['parent_author'],
             'permlink': post['parent_permlink'],
             'comment_permlink': post['permlink'],
-            'report_time': str(datetime.now()),
+            'report_time': to_timestamp(datetime.now()),
             'bot_signal': post['bot_signal'],
             'processed': False
         })
@@ -163,7 +169,7 @@ class DataStore:
             'author': post['parent_author'],
             'permlink': post['parent_permlink'],
             'comment_permlink': post['permlink'],
-            'report_time': str(datetime.now()),
+            'report_time': to_timestamp(datetime.now()),
             'bot_signal': post['bot_signal'],
             'processed': False
         })
@@ -177,7 +183,7 @@ class DataStore:
             'author': post['parent_author'],
             'permlink': post['parent_permlink'],
             'comment_permlink': post['permlink'],
-            'report_time': str(datetime.now()),
+            'report_time': to_timestamp(datetime.now()),
             'bot_signal': post['bot_signal'],
             'processed': False
         })
@@ -235,10 +241,10 @@ class DataStore:
         end = KR.localize(
             datetime.strptime(end_date, '%d %b %Y')
                 .replace(hour=23, minute=59, second=59))
-
         result = reports.search((qry.report_time >= start.timestamp()) &
                              (qry.report_time <= end.timestamp()))
         return result
+
     """
         Points
     """
@@ -275,7 +281,7 @@ class DataStore:
         reports.insert({
             'user_id': user_id, 
             'amount': amount, 
-            'date': str(datetime.now().strftime('%d %b %Y'))
+            'date': datetime.now().strftime('%d %b %Y')
             })
         self.update_point(user_id)
         self.mutex_main.release()
