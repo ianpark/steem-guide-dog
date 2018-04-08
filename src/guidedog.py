@@ -272,22 +272,22 @@ class GuideDog:
             pass
 
     def generate_warning_message(self, post):
+        reported_count = post['reported_count'] + 1
         if post['bot_signal'] == "@저작권안내":
-            greet = ('저작권 안내입니다.' if post['reported_count'] <= 1
-                    else '%s 번째 안내입니다.' % post['reported_count'])
-            greet_eng = ('This is the %s copyright warning.' % ordinal(post['reported_count']))
+            greet = ('저작권 안내입니다.' if reported_count <= 1
+                    else '%s 번째 안내입니다.' % reported_count)
+            greet_eng = ('this is the %s copyright warning.' % ordinal(reported_count))
             lines = ['https://i.imgur.com/2PPRCJq.png',
-                    '#### Hey @%s, %s' % (post['parent_author'], greet_eng),
-                    self.copyright_eng,
-                    '---',
-                    '#### 안녕하세요 @%s님, %s' % (post['parent_author'], greet),
-                    self.copyright
-                    ]
+                    '#### Hey @%s, %s' % (post['parent_author'], greet_eng)]
+            lines.extend(self.copyright_eng)
+            lines.append('---')
+            lines.append('#### 안녕하세요 @%s님, %s' % (post['parent_author'], greet))
+            lines.extend(self.copyright)
             return '\n'.join(lines)
         else:
             if post['reported_count'] <= 5:
-                greet = ('Nice to meet you!' if post['reported_count'] <= 1
-                        else 'We have met %s times already!' % post['reported_count'])
+                greet = ('Nice to meet you!' if reported_count <= 1
+                        else 'We have met %s times already!' % reported_count)
                 lines = [sys_random.choice(self.config['guidedog']['mild_photo']),
                         '## Woff, woff!',
                         '#### Hello @%s, %s' % (post['parent_author'], greet)
@@ -302,7 +302,7 @@ class GuideDog:
                 lines.extend(self.message2)
                 return '\n'.join(lines)
             else:
-                greet = ('We have met %s times already!' % post['reported_count'])
+                greet = ('We have met %s times already!' % reported_count)
                 lines = [sys_random.choice(self.config['guidedog']['hard_photo']),
                         '#### Hey @%s, %s' % (post['parent_author'], greet)
                         ]
