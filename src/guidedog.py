@@ -221,8 +221,7 @@ class GuideDog:
                 self.log.info('Skip request: reputation is too low (%s, %s) ' % (post['author'], rep))
                 return
 
-            post['reported_count'] = self.db.get_reported_count(post['parent_author'])
-            self.process_spam(post)
+            self.process_spam(post, self.db.get_reported_count(post['parent_author'])+1)
 
         elif post['signal_type'] == 'praise':
             if self.db.is_already_consumed_comment(post):
@@ -271,8 +270,7 @@ class GuideDog:
         else:
             pass
 
-    def generate_warning_message(self, post):
-        reported_count = post['reported_count'] + 1
+    def generate_warning_message(self, post, reported_count):
         if post['bot_signal'] == "@저작권안내":
             greet = ('저작권 안내입니다.' if reported_count <= 1
                     else '%s 번째 안내입니다.' % reported_count)
@@ -285,7 +283,7 @@ class GuideDog:
             lines.extend(self.copyright)
             return '\n'.join(lines)
         else:
-            if post['reported_count'] <= 5:
+            if reported_count <= 5:
                 greet = ('Nice to meet you!' if reported_count <= 1
                         else 'We have met %s times already!' % reported_count)
                 lines = [sys_random.choice(self.config['guidedog']['mild_photo']),
@@ -294,8 +292,8 @@ class GuideDog:
                         ]
                 lines.extend(self.message1)
                 return '\n'.join(lines)
-            elif post['reported_count'] <= 10:
-                greet = ('We have met %s times already!' % post['reported_count'])
+            elif reported_count <= 10:
+                greet = ('We have met %s times already!' % reported_count)
                 lines = [sys_random.choice(self.config['guidedog']['moderate_photo']),
                         '#### Hello @%s, %s' % (post['parent_author'], greet)
                         ]
@@ -332,11 +330,11 @@ class GuideDog:
             else:
                 self.log.info('%s already voted' % supporter)
 
-    def process_spam(self, post):
-        my_comment = self.create_post(post['parent_post_id'], self.generate_warning_message(post))
+    def process_spam(self, post, reported_count):
+        my_comment = self.create_post(post['parent_post_id'], self.generate_warning_message(post, reported_count))
         self.db.store_report(post)
         self.vote_on_post(my_comment, self.config['spam_supporters'])
-        if post['reported_count'] > 10:
+        if reported_count > 10:
             self.supporters_vote(post['parent_author'], post['parent_permlink'], self.config['spam_downvoters'])
 
     def generate_benefit_message(self, post):
