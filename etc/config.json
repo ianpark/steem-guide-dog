@@ -176,7 +176,7 @@
             }
         ],
         "copyright_file": "resource/copyright.txt",
-
+        "copyright_file_eng": "resource/copyright_eng.txt",
 
         "mild_warning_file": "resource/warning1.txt",
         "moderate_warning_file": "resource/warning2.txt",

@@ -14,6 +14,8 @@ from publisher import Publisher
 
 sys_random = random.SystemRandom()
 
+ordinal = lambda n: "%d%s" % (n,"tsnrhtdd"[(n/10%10!=1)*(n%10<4)*n%10::4])
+
 
 def readFile(file_path):
     with open(file_path) as f:
@@ -35,6 +37,8 @@ class GuideDog:
         self.message2 = readFile(self.config['guidedog']['moderate_warning_file'])
         self.message3 = readFile(self.config['guidedog']['hard_warning_file'])
         self.copyright = readFile(self.config['guidedog']['copyright_file'])
+        self.copyright_eng = readFile(self.config['guidedog']['copyright_file_eng'])
+
 
         self.last_daily_report = None
         self.daily_report_generator = Publisher(self.db)
@@ -271,10 +275,14 @@ class GuideDog:
         if post['bot_signal'] == "@저작권안내":
             greet = ('저작권 안내입니다.' if post['reported_count'] <= 1
                     else '%s 번째 안내입니다.' % post['reported_count'])
+            greet_eng = ('This is the %s copyright warning.' % ordinal(post['reported_count']))
             lines = ['https://i.imgur.com/2PPRCJq.png',
-                    '#### 안녕하세요 @%s님, %s' % (post['parent_author'], greet)
+                    '#### Hey @%s, %s' % (post['parent_author'], greet_eng),
+                    self.copyright_eng,
+                    '---',
+                    '#### 안녕하세요 @%s님, %s' % (post['parent_author'], greet),
+                    self.copyright
                     ]
-            lines.extend(self.copyright)
             return '\n'.join(lines)
         else:
             if post['reported_count'] <= 5:
