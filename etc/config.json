@@ -16,6 +16,11 @@
             "voteOver": 3000
         },
         {
+            "account": "asbear",
+            "weight": -50,
+            "voteOver": 3000
+        },
+        {
             "account": "noctisk",
             "weight": -5,
             "voteOver": 5000
