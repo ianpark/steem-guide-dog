@@ -13,7 +13,7 @@ from steem.post import Post
 from block_pointer import BlockPointer
 from steem.steemd import Steemd
 from steem import Steem
-
+import traceback
 
 class PostStream:
     log = logging.getLogger(__name__)
@@ -102,6 +102,7 @@ class Feed:
             except Exception as e:
                 self.log.error("Failed collecting and processing the post")
                 self.log.error(e)
+                traceback.print_exc()
                 sleep(1)
         self.log.info ('End Feed')
 
@@ -156,6 +157,10 @@ class Feed:
             return
 
         tags = parent_post.json_metadata.get('tags')
+        if tags == None:
+            self.log.error("No tag: " + str(parent_post))
+            return
+
         if tags and self.config['main_tag'] in tags or \
             any(x.startswith(self.config['tag_prefix']) for x in tags):
             self.log.info('Found a matching comment: %s' % plain_post.get('body'))
