@@ -82,6 +82,8 @@ class GuideDog:
                 limit -= 1
                 if limit == 0:
                     raise 'Posting check failure'
+                else:
+                    self.log.info('Failed to confirm the post creation. retry ' + limit)
 
     def vote(self, post_id, power, voter):
         try:

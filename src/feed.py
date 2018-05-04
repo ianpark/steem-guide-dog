@@ -158,7 +158,7 @@ class Feed:
 
         tags = parent_post.json_metadata.get('tags')
         if tags == None:
-            self.log.error("No tag: " + str(parent_post))
+            self.log.error("No tag: " + parent_post)
             return
 
         if tags and self.config['main_tag'] in tags or \
