@@ -55,14 +55,14 @@
             "voteOver": 8000
         },
         {
-            "account": "extrashin",
-            "weight": 20,
-            "voteOver": 8500
-        },
-        {
             "account": "julianpark",
             "weight": 30,
             "voteOver": 9200
+        },
+        {
+            "account": "jjjjabe",
+            "weight": 50,
+            "voteOver": 7000
         }
     ],
     "welcome_supporters": [
@@ -73,12 +73,12 @@
         },
         {
             "account": "krguidedog",
-            "weight": 50,
+            "weight": 10,
             "voteOver": 5000
         },
         {
             "account": "asbear",
-            "weight": 50,
+            "weight": 10,
             "voteOver": 5000
         }
     ],
@@ -210,7 +210,7 @@
         ]
     },
     "praise_curator": ["asbear"],
-    "promote_curator": ["asbear", "umkin", "bree1042", "floridasnail", "julianpark", "bookkeeper", "feelsogood", "maanya", "feyee95", "sjchoi", "happyberrysboy", "extrashin", "julianpark", "dayoung"],
+    "promote_curator": ["asbear", "umkin", "bree1042", "floridasnail", "julianpark", "bookkeeper", "feelsogood", "maanya", "feyee95", "sjchoi", "happyberrysboy", "julianpark", "dayoung"],
     "welcome_curator": ["asbear", "woo7739", "carrotcake", "forhappywomen", "segyepark", "twinbraid", "familydoctor", "bramd", "xinnong"],
     "whitelist": [],
     "blacklist": ["jordbruk", "newbieji1", "rashley01", "syjk96", "coin104", "gunner4108", "gunner4107", "hyunlee1999", "scholarships", "deadfrost", "cororenny", "fishmaniac", "reinaandrea", "trebolcoins", "jillare", "emlewi", "rollingjk", "edunoguer", "castiel20", "frost217", "seoulguy", "tinyspace", "badukgo", "madyinlay", "korealove", "jakebar", "luiarra","mukstagram","greatstory"],
