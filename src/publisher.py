@@ -70,7 +70,8 @@ class Publisher:
         reporter_table = ['불러주신분 | 횟수 | 획득포인트 | 누적포인트',
                             '---  | --- | --- | ---']
         for idx, item in enumerate(reporter_rank):
-            point = 1
+            point = 0
+            """
             if item['count'] >= 10:
                 point = 4
             elif item['count'] >= 6:
@@ -79,6 +80,7 @@ class Publisher:
                 point = 2
             else:
                 point = 1
+            """
             self.db.add_point(item['name'], point, start_date)
             self.db.update_point(item['name'])
             new_point = self.db.get_point(item['name'])
@@ -101,6 +103,8 @@ class Publisher:
        
         title = '🐶 %s 가이드독 스팸신고 활동 보고드립니다 (KR Guidedog\'s war on spam)' % period
         cont = ['<center>https://steemitimages.com/DQmQJySGPCWWhtS9Gw2aoR9pa3n43XCN5yvmKMwVWBk8Eym/Screen%20Shot%202017-10-11%20at%2023.25.25.png</center>',
+                '# [공지] 가이드독 포인트는 더이상 발급되지 않습니다. 감사합니다.',
+                '',
                 '안녕하세요? @krguidedog입니다. %s의 KR가이드독 활동 내역을 보고드립니다.' % md,
                 '',
                 '%s에는 %s분께서 %s개의 스팸 글을 신고해 주셨습니다. %s명의 스패머들에게는 kr가이드독이 '
@@ -127,11 +131,7 @@ class Publisher:
                 '- @저작권신고',
                 '',
                 '## 신고해주신 분들에게 드리는 혜택',
-                '매일매일 신고량을 정상하여 가이드독 포인트를 드립니다.',
-                '- 10회 이상 - 4 포인트',
-                '- 6회 이상 - 3 포인트',
-                '- 3회 이상 - 2 포인트',
-                '- 1회 이상 - 1 포인트',
+                '가이드독 포인트는 더이상 발급되지 않습니다. 기존에 가지고 계신 포인트는 계속 사용하실 수 있습니다.'
                 '',
                 '## 가이드독 포인트 사용법',
                 '### 칭찬해',
